@@ -1,11 +1,20 @@
 
-import './App.css'
+import {Outlet} from 'react-router-dom'
+import {Header,Footer} from './components/index';
 
 function App() {
 
   return (
     <>
-      <h1>Hello</h1>
+    <div className="min-h-screen flex flex-wrap content-between">
+      <div className='w-full block'>
+        <Header />
+        <main>
+          Hey : <Outlet />
+        </main>
+        <Footer />
+      </div>
+    </div>
     </>
   )
 }
