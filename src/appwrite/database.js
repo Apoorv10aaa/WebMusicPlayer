@@ -15,7 +15,7 @@ export  class DatabaseService{
     // database services
 
     async addUser({userName,email,userId,profile}){
-        try {
+        try { // remember you will use session token of google auth for fetching profile(.fetch)
             const userData=this.database.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteUsersId,
