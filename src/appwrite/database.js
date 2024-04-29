@@ -78,6 +78,20 @@ export  class DatabaseService{
         }
     }
 
+    async getAlbum(albumId){
+        try {
+            const album=await this.database.getDocument(
+                conf.appwriteDatabaseId,
+                conf.appwriteAlbumsId,
+                albumId
+            )
+            return album;
+        } catch (error) {
+            console.log("Error in Database => ",error);
+            throw error;
+        }
+    }
+
     async getPlaylists(userId=null){
         try {
             let playlists=null;
@@ -95,6 +109,34 @@ export  class DatabaseService{
                 )
             }
             return playlists;
+        } catch (error) {
+            console.log("Error in Database => ",error);
+            throw error;
+        }
+    }
+
+    async getPlaylist(playlistId){
+        try {
+            const playlist=await this.database.getDocument(
+                conf.appwriteDatabaseId,
+                conf.appwritePlaylistsId,
+                playlistId
+            )
+            return playlist;
+        } catch (error) {
+            console.log("Error in Database => ",error);
+            throw error;
+        }
+    }
+
+    async getTrack(trackId){
+        try {
+            const track=await this.database.getDocument(
+                conf.appwriteDatabaseId,
+                conf.appwriteTracksId,
+                trackId
+            )
+            return track;
         } catch (error) {
             console.log("Error in Database => ",error);
             throw error;
@@ -252,6 +294,22 @@ export  class DatabaseService{
             console.log("Error in Database => ",error);
             throw error;
         }
+    }
+
+    async getRandom(){
+        var songs=[];
+        this.getTracks().then(
+            (tracks)=>{
+                if(tracks) songs=tracks.documents;
+            }
+        );
+        const len=songs.size()-1;
+        var ind=Math.floor(Math.random()*len +1);
+        var songId=songs[ind];
+        var trackData=null;
+        this.getTrack(songId).then((track)=> trackData=track);
+        return trackData;
+
     }
 }
 

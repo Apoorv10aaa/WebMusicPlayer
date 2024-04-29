@@ -67,3 +67,6 @@ export class StorageServices{
         );
     }
 }
+
+const storageService=new StorageServices();
+export default storageService;
