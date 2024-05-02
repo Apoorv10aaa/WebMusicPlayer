@@ -14,15 +14,29 @@ export  class DatabaseService{
 
     // database services
 
-    async addUser({userName,email,userId,profile}){
+    async addUser({name,email,userId,profile}){
         try { // remember you will use session token of google auth for fetching profile(.fetch)
             const userData=this.database.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteUsersId,
                 userId,
                 {
-                    userName,email,userId,profile
+                    userName:name,email,userId,profile:profile.picture
                 }
+            );
+            return userData;
+        } catch (error) {
+            console.log("Error in Database => ",error);
+            throw error;
+        }
+    }
+
+    async getUser(userId){
+        try {
+            const userData=this.database.getDocument(
+                conf.appwriteDatabaseId,
+                conf.appwriteUsersId,
+                userId
             );
             return userData;
         } catch (error) {
@@ -48,7 +62,10 @@ export  class DatabaseService{
         }
     }
 
-    async addPlaylist({playlistId=ID.unique(),name,description,createdBy,tracks,isPublic}){
+    async addPlaylist({playlistId=ID.unique(),
+        name="My Playlist",
+        description,
+        createdBy,tracks=[],isPublic}){
         try {
             const playlistData=this.database.createDocument(
                 conf.appwriteDatabaseId,

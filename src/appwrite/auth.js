@@ -20,7 +20,8 @@ export class AuthService{
             window.location.href = await this.account.createOAuth2Session(
                 'google',
                 'http://localhost:5173/home',
-                'http://localhost:5173/error'
+                'http://localhost:5173/landing',
+                ['profile','email','name']
             );
         } catch (error) {
             console.log("Error at Auth => ",error);
