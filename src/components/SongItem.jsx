@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import databaseService from '../appwrite/database';
+import {Link} from 'react-router-dom';
 
 export default function SongItem({track,add,playlistId}){
     const [tracks,setTracks]=useState();
@@ -11,7 +12,10 @@ export default function SongItem({track,add,playlistId}){
     }
     return(
         <div>
-            <p>{track.songName}</p>
+            <Link>
+                <img src={track.cover} alt={track.songName} />
+                <p>{track.songName}</p>
+            </Link>
             {add ? <button onClick={addSong(track)}>Add</button> : null}
         </div>
     )

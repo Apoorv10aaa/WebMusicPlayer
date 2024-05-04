@@ -5,7 +5,7 @@ import SongItem from './SongItem';
 export default function Search({add,playlistId}){
     const [query,setQuery]=useState('');
     const [result,setResult]=useState([]);
-
+    // always use result as result._source beacuse this object will have all data of song;
     const handleSearch= useCallback(()=>{
         elasticsearchService.searchTracks(query).then((data)=> setResult(data));
     },[])

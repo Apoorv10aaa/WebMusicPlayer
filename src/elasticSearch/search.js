@@ -1,8 +1,11 @@
 import { Client as ElasticClient} from '@elastic/elasticsearch' ;
+import { Client, Functions, ExecutionMethod } from "appwrite";
 import conf from '../conf/conf'
 
 export class ElasticSearchService{
     elasticClient;
+    client = new Client();
+    functions;
 
     constructor(){
         this.elasticClient=new ElasticClient({
@@ -11,21 +14,21 @@ export class ElasticSearchService{
                 apiKey:conf.elasticSearchApi
             }
         });
+        this.client
+            .setEndpoint(conf.appwriteUrl)
+            .setProject(conf.appwriteProjectId);
+        this.functions=new Functions(this.client);
     }
 
     async searchTracks(query){
         try {
-            const response = await fetch(conf.appwriteElasticSearchFunctionId , {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Appwrite-Project': conf.appwriteProjectId,
-                    'X-Appwrite-Key': conf.appwriteApiKey,
-                },
-                body: JSON.stringify({ query: query })
-            });
-            const data = await response.json();
-            return data;
+            const result = await this.functions.createExecution(
+                conf.appwriteElasticSearchFunctionId,
+                query,
+                ExecutionMethod.POST, 
+            );
+            console.log(result);
+            return result;
         } catch (error) {
             console.log("Error in Elastic Search => ",error);
             throw error;
