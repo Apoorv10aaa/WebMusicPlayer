@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.gradient-bg {
+  background: linear-gradient(to right, black, #17037d);
+}
+.font-lato {
+  font-family: "Lato", sans-serif;
+}
+#progress {
+  height: 100%;
+  background-color: #d47a30;
+  width: 30%;
+  transition: width 0.1s linear;
+}
+#middle-section {
+  overflow-y: auto;
+  max-height: calc(100vh - (1 / 5 * 100vh));
+}
+/* Styles the scrollbar itself (vertical and horizontal) */
+::-webkit-scrollbar {
+  width: 7px; /* width of the vertical scrollbar */
+  height: 5px; /* height of the horizontal scrollbar */
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* light grey track */
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #f7941d; /* grey thumb */
+  border-radius: 5px; /* roundness of the thumb */
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d47a30; /* dark grey when hovering */
+}

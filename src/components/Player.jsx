@@ -14,6 +14,8 @@ export default function Player(){
     const isPlaying=useSelector((state)=>state.player.isPlaying);
     const songData=useSelector((state)=>state.song.songData);
     const [track,setTrack]=useState(null);
+    const [volume,setVolume]=useState(1);
+    var progressInterval;
 
     useEffect(()=>{
         storageService.getFile(songId).then((track)=>{
@@ -27,8 +29,22 @@ export default function Player(){
 
     function togglePlayPause(){
         dispatch(playPause());
-        if(isPlaying) audioRef.current.play();
-        else audioRef.current.pause();
+        if(!isPlaying){
+            audioRef.current.play();
+            progressInterval = setInterval(updateProgress, 100);
+        }
+        else{
+            audioRef.current.pause();
+            clearInterval(progressInterval);
+        }
+    }
+    const progress=document.getElementById("progress");
+
+    function updateProgress(){
+        const currentTime = audioRef.currentTime;
+        const duration = audioRef.duration;
+        const percentage = (currentTime / duration) * 100;
+        progress.style.width = percentage + '%';
     }
     useEffect(()=>{
         dispatch(playPause());
