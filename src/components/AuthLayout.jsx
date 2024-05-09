@@ -3,16 +3,13 @@ import {useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import LoadingIndicator from 'index';
 
-function AuthLayout({children,path}){
+function AuthLayout({children}){
     const [loading,setLoading]= useState(true);
     const authStatus=useSelector((state)=>state.auth.status);
     const navigate=useNavigate();
 
-    useEffect(()=>{
-        if(authStatus) navigate(path);
-        else navigate("/Landing");
-        setLoading(false);
-    },[authStatus,navigate,path]);
+    if(authStatus) setLoading(false);
+    else navigate("/");
 
     return (
         loading ? <LoadingIndicator /> : (<>{children}</>)

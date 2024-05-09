@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {useParams} from 'react-router-dom';
 import databaseService from '../appwrite/database'
-import SongItem from '../components/index';
+import SongItem, { LoadingIndicator } from '../components/index';
 import { useSelector } from 'react-redux';
 import {useForm} from 'react-hook-form'
 import Search from '../components/index';
@@ -13,6 +13,7 @@ export default function Playlist(){
     const user = useSelector((state)=>state.auth.userData);
     const [disabled,setDisabled]=useState(true);
     const {register,handleSubmit}=useForm();
+    const [loading,setLoading] =useState(true);
     
     useEffect(()=>{
         databaseService.getPlaylist(playlistId).then((playlist)=>{
@@ -21,6 +22,7 @@ export default function Playlist(){
         databaseService.getPlaylistTracks(playlistId).then((tracks)=>{
             setTracks(tracks);
         })
+        setLoading(false);
     })
 
     function editPlaylist(){
@@ -37,44 +39,9 @@ export default function Playlist(){
     var isAuthor=false;
     if(user.$id===playlist.createdBy) isAuthor=true;
     // everything will be an input with disabled on .
+
+    if(loading) return(<LoadingIndicator />);
     return(
-        <div
-          id="middle-section"
-          className="flex-grow flex flex-col rounded-lg gap-4"
-        >
-          {/* <!-- Premium Div --> */}
-          <div id="premium" className="h-16 px-4 ">
-            <div
-              className="h-full w-full border-b-2 border-zinc-500 flex justify-between items-center rounded-sm"
-            >
-              {/* <!-- Brand Div --> */}
-              <div id="brand" className="flex items-center space-x-1">
-                <img src="logo.png" alt="Brand Logo" className="h-14 w-16" />
-                <h1 className="text-3xl font-lato text-white font-bold ">Amuse</h1>
-              </div>
-              {/* <!-- Buttons Div --> */}
-              <div id="buttons flex items-center space-x-3">
-                <button
-                  className="bg-[#DBD4D0] py-1 rounded-3xl text-white w-36 font-lato hover:bg-[#D47A30] hover:shadow-sm hover:shadow-gray-300"
-                >
-                  Premium
-                </button>
-                <svg
-                  className="inline-block"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#DBD4D0"
-                  width="35px"
-                  height="35px"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          {/* <!-- Playlist Page --> */}
           <div id="playlistPage" className="flex-grow px-4 flex flex-col gap-4">
             {/* <!-- PlaylistsData --> */}
             <div className="h-44 bg-black bg-opacity-50 rounded-md p-2">
@@ -159,42 +126,8 @@ export default function Playlist(){
               <SongItem />
             </div>
             {/* <!-- Add Songs (Search Component)--> */}
-            <div id="search" className="flex-grow px-4">
-              <div className="h-full w-full flex flex-col gap-5">
-                {/* <!-- Search Bar --> */}
-                <div id="searchBar" className="flex justify-center gap-2">
-                  <input
-                    type="text"
-                    value=""
-                    placeholder="Search Your Song,Artist or Genre"
-                    className="text-[#424242] text-sm w-80 font-lato bg-[#DBD4D0] rounded-2xl text-center "
-                  />
-                  <svg
-                    className="hover:cursor-pointer"
-                    width="30px"
-                    height="30px"
-                    viewBox="0 0 16 16"
-                    xmlns="http://www.w3.org/2000/svg"
-                    version="1.1"
-                    fill="none"
-                    stroke="#DBD4D0"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                  >
-                    <path d="m11.25 11.25 3 3" />
-                    <circle cx="7.5" cy="7.5" r="4.75" />
-                  </svg>
-                </div>
-                {/* <!-- SearchList --> */}
-                <div id="searchList" className="flex flex-col gap-2">
-                  {/* <!-- SongSearchItem --> */}
-                  <SongItem/>
-                </div>
-              </div>
-            </div>
+            <Search />
           </div>
-        </div>
         // another way can be to send playlist id all the way to SongItem -propdrilling(maybe not good)
     )
 }
