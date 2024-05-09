@@ -116,45 +116,7 @@ export default function Profile(){
                   {/* <!-- Songs Div --> */}
                   <div id="songs" className="flex flex-wrap space-x-3">
                     {/* <!-- Song Items go here --> */}
-                    <div
-                      className="songItem p-2 relative bg-black bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-10"
-                    >
-                      <div className="flex flex-col justify-between space-y-2">
-                        <img
-                          src="./song2Img.jpg"
-                          alt="Song Image"
-                          className="h-28 w-32 rounded-lg"
-                        />
-                        <div id="songDetail">
-                          <p className="text-sm text-white font-lato font-bold">
-                            Song1Name
-                          </p>
-                          <p className="text-xs text-white font-lato">
-                            Artist Name
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- song2 --> */}
-                    <div
-                      className="songItem p-2 relative bg-black bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-10"
-                    >
-                      <div className="flex flex-col justify-between space-y-2">
-                        <img
-                          src="./songImg.jpg"
-                          alt="Song Image"
-                          className="h-28 w-32 rounded-lg"
-                        />
-                        <div id="songDetail">
-                          <p className="text-sm text-white font-lato font-bold">
-                            Song2Name
-                          </p>
-                          <p className="text-xs text-white font-lato">
-                            Artist Name
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <SongPreview />
                   </div>
                 </div>
                 {/* <!-- Liked --> */}
@@ -163,45 +125,7 @@ export default function Profile(){
                   {/* <!-- Songs Div --> */}
                   <div id="songs" className="flex flex-wrap space-x-3">
                     {/* <!-- Song Items go here --> */}
-                    <div
-                      className="songItem p-2 relative bg-black bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-10"
-                    >
-                      <div className="flex flex-col justify-between space-y-2">
-                        <img
-                          src="./song2Img.jpg"
-                          alt="Song Image"
-                          className="h-28 w-32 rounded-lg"
-                        />
-                        <div id="songDetail">
-                          <p className="text-sm text-white font-lato font-bold">
-                            Song1Name
-                          </p>
-                          <p className="text-xs text-white font-lato">
-                            Artist Name
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- song2 --> */}
-                    <div
-                      className="songItem p-2 relative bg-black bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-10"
-                    >
-                      <div className="flex flex-col justify-between space-y-2">
-                        <img
-                          src="./songImg.jpg"
-                          alt="Song Image"
-                          className="h-28 w-32 rounded-lg"
-                        />
-                        <div id="songDetail">
-                          <p className="text-sm text-white font-lato font-bold">
-                            Song2Name
-                          </p>
-                          <p className="text-xs text-white font-lato">
-                            Artist Name
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <SongPreview />
                   </div>
                 </div>
                 {/* <!-- Playlists --> */}
@@ -212,45 +136,7 @@ export default function Profile(){
                   {/* <!-- Playlists div --> */}
                   <div id="songs" className="flex flex-wrap space-x-3">
                     {/* <!-- Playlist go here --> */}
-                    <div
-                      className="p-2 relative bg-black bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-10"
-                    >
-                      <div className="flex flex-col justify-between space-y-2">
-                        <img
-                          src="./song2Img.jpg"
-                          alt="Song Image"
-                          className="h-28 w-32 rounded-lg"
-                        />
-                        <div id="songDetail">
-                          <p className="text-sm text-white font-lato font-bold">
-                            Playlist1Name
-                          </p>
-                          <p className="text-xs text-white font-lato text-wrap">
-                            Description
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- Playlist2 --> */}
-                    <div
-                      className="p-2 relative bg-black bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-10"
-                    >
-                      <div className="flex flex-col justify-between space-y-2">
-                        <img
-                          src="./songImg.jpg"
-                          alt="Song Image"
-                          className="h-28 w-32 rounded-lg"
-                        />
-                        <div id="songDetail">
-                          <p className="text-sm text-white font-lato font-bold">
-                            Playlist2Name
-                          </p>
-                          <p className="text-xs text-white font-lato text-wrap">
-                            Description
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <PlaylistPreview />
                   </div>
                 </div>
               </div>
