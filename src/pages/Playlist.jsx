@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import {useParams} from 'react-router-dom';
 import databaseService from '../appwrite/database'
 import SongItem, { LoadingIndicator } from '../components/index';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {useForm} from 'react-hook-form'
 import Search from '../components/index';
+import {setUI} from '../store/uiSlice'
 
 export default function Playlist(){
     const {playlistId} =useParams();
@@ -14,16 +15,18 @@ export default function Playlist(){
     const [disabled,setDisabled]=useState(true);
     const {register,handleSubmit}=useForm();
     const [loading,setLoading] =useState(true);
+    const dispatch=useDispatch();
     
     useEffect(()=>{
-        databaseService.getPlaylist(playlistId).then((playlist)=>{
+      dispatch(setUI({currentSource:'playlist',id:playlistId,displayAddButton:true}));
+      databaseService.getPlaylist(playlistId).then((playlist)=>{
             setPlaylist(playlist);
-        });
-        databaseService.getPlaylistTracks(playlistId).then((tracks)=>{
+      });
+      databaseService.getPlaylistTracks(playlistId).then((tracks)=>{
             setTracks(tracks);
-        })
-        setLoading(false);
-    })
+      })
+      setLoading(false);
+    },[dispatch])
 
     function editPlaylist(){
         setDisabled(false);
@@ -126,7 +129,7 @@ export default function Playlist(){
               <SongItem />
             </div>
             {/* <!-- Add Songs (Search Component)--> */}
-            <Search />
+            {isAuthor && <Search />}
           </div>
         // another way can be to send playlist id all the way to SongItem -propdrilling(maybe not good)
     )

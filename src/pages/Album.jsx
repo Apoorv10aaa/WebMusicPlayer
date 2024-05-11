@@ -2,14 +2,18 @@ import { useEffect, useState } from 'react';
 import {useParams} from 'react-router-dom';
 import databaseService from '../appwrite/database'
 import SongItem, { LoadingIndicator } from '../components/index';
+import { useDispatch } from 'react-redux';
+import {setUI} from '../store/uiSlice'
 
 export default function Album(){
     const {albumId} =useParams();
     const [album,setAlbum]=useState();
     const [tracks,setTracks]=useState([]);
     const [loading,setLoading] =useState(true);
+    const dispatch=useDispatch();
 
     useEffect(()=>{
+      dispatch(setUI({currentSource:'playlist',id:albumId,displayAddButton:true}));
         databaseService.getAlbum(albumId).then((album)=>{
             setAlbum(album);
         });

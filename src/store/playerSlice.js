@@ -4,9 +4,8 @@ const playerSlice=createSlice({
     name:'player',
     initialState:{
         isPlaying:false,
-        next:null,
+        next:[],
         prev:[],
-        volume:100
     },
     reducers:{
         playPause:(state)=>{
@@ -15,14 +14,14 @@ const playerSlice=createSlice({
         volumeCntrl:(state,action)=>{
             state.volume=action.payload;
         },
-        playNext:(state,action)=>{
-            state.prev=state.prev.push(action.payload.trackId);
+        updateNext:(state,action)=>{
+            state.next=action.payload;
         },
         emptyPrev:(state)=>{
             state.prev=[];
         },
-        playPrev:(state)=>{
-            state.prev=state.prev.pop();
+        updatePrev:(state,action)=>{
+            state.prev=action.payload;
         }
     }
 })

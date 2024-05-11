@@ -3,32 +3,31 @@ import { useEffect, useState ,useRef} from 'react';
 import {Link} from 'react-router-dom';
 import databaseService from '../appwrite/database';
 import storageService from '../appwrite/bucket';
-import {playPause,volumeCntrl,playNext,playPrev} from '../store/playerSlice';
+import {playPause,updatePrev} from '../store/playerSlice';
 import { updateSong } from '../store/songSlice';
 
 export default function Player(){
     const audioRef=useRef(null);
     const dispatch=useDispatch();
-
     const songId=useSelector((state)=> state.song.songId);
     const isPlaying=useSelector((state)=>state.player.isPlaying);
     const songData=useSelector((state)=>state.song.songData);
     const [track,setTrack]=useState(null);
-    const [volume,setVolume]=useState(1);
+    const next=useSelector((state)=>state.player.next);
+    const prev=useSelector((state)=>state.player.prev);
+    var volume=100;
     var progressInterval;
+    var cover=null;
 
     useEffect(()=>{
         storageService.getFile(songId).then((track)=>{
             if(track) setTrack(track);
             else track=null;
         });
+        storageService.getFile(songData.cover).then((data)=>(cover=data));
     },[songId]);
 
-    const [clickable,setClickable]=useState(false);
-    if(songId) setClickable(true);
-
     function togglePlayPause(){
-        dispatch(playPause());
         if(!isPlaying){
             audioRef.current.play();
             progressInterval = setInterval(updateProgress, 100);
@@ -37,6 +36,7 @@ export default function Player(){
             audioRef.current.pause();
             clearInterval(progressInterval);
         }
+        dispatch(playPause());
     }
     const progress=document.getElementById("progress");
 
@@ -46,27 +46,37 @@ export default function Player(){
         const percentage = (currentTime / duration) * 100;
         progress.style.width = percentage + '%';
     }
-    useEffect(()=>{
-        dispatch(playPause());
-        audioRef.current.pause();
-        audioRef.current.load();
-    },[track,dispatch]);
     
     function nextSong(){
-        databaseService.getRandom().then((songId)=>{
-            dispatch(updateSong(songId));
-            dispatch(playNext());
-        });
+        // depends on where user is, wants to play next album song or next playlist song
+        prev.push(track);
+        dispatch(updatePrev(prev));
+        setTrack(()=>{
+            var index=Math.floor(Math.random()*next.length)+1;
+            return next[index];
+        })
+        togglePlayPause();
     }
-    const prev=useSelector((state)=>state.player.prev);
     function prevSong(){
-        databaseService.getTrack(prev[prev.size()-1]).then((trackData)=> dispatch(updateSong(trackData)));
-        dispatch(playPrev());
+        if(prev.length>0){
+            setTrack(prev[prev.length-1]);
+            prev.pop();
+            dispatch(updatePrev(prev));
+        }
     }
-
+    var likedSongs=[];
+    function addLike(){
+        databaseService.getUser().then((user)=>{
+           likedSongs=user.liked;
+           likedSongs.push(track);
+        })
+    }
+    function replay(){
+        audioRef.current.play();
+    }
     function volumeUpDown(e){
-        const volume=e.target.value;
-        dispatch(volumeCntrl(volume));
+        volume=e.target.value;
+        audioRef.current.volume=volume;
     }
 
     
@@ -82,24 +92,32 @@ export default function Player(){
             </div>
             {/* <!-- Player --> */}
             <div id="player" className="h-4/5 flex items-center px-2">
+                <audio
+                ref={audioRef}
+                id="audio"
+                src={track}
+                ></audio>
                 <div id="song" className="text-white flex items-center px-2 w-5/12">
                 {/* <!-- Song image --> */}
                 <img
-                    src="./songImg.jpg"
+                    src={cover}
                     alt="Song Image"
-                    className="h-14 w-18 mr-2 rounded-sm"
+                    className="h-14 w-18 mr-2 rounded-sm hover:cursor-pointer hover:shadow-gray-100 hover:shadow-sm"
                 />
                 {/* <!-- Song details --> */}
                 <div>
-                    <h1 className="text-xl font-lato">SongName</h1>
-                    <p className="text-sm fotn-lato">Arijit Singh</p>
+                    <h1 className="text-xl font-lato hover:underline">{songData.songName}</h1>
+                    <p className="text-sm fotn-lato">{songData.artists.map((artist,index)=>(<span key={index}>{artist},</span>))}</p>
                 </div>
                 </div>
                 <div className="flex justify-between flex-grow">
                 {/* <!-- Player controls --> */}
                 <div id="controls" className="flex items-center space-x-4">
                     {/* <!-- SVG Icons --> */}
+                    {/* prev */}
                     <svg
+                    className='hover:cursor-pointer'
+                    onClick={prevSong}
                     width="30px"
                     height="30px"
                     viewBox="0 0 24 24"
@@ -115,23 +133,63 @@ export default function Player(){
                         fill="#DBD4D0"
                     />
                     </svg>
+                    {/* play */}
+                    {isPlaying ? 
+                    ( <svg fill="#DBD4D0"
+                        onClick={togglePlayPause}
+                        className='hover:cursor-pointer'
+                        width="30px"
+                        height="30px"
+                        viewBox="0 0 32 32"
+                        xmlns="http://www.w3.org/2000/svg"
+                        >
+                        <g
+                            id="Group_22"
+                            data-name="Group 22"
+                            transform="translate(-670.002 -321.695)"
+                        >
+                            <path
+                            id="Path_360"
+                            data-name="Path 360"
+                            d="M686,353.7a16,16,0,1,0-16-16A16,16,0,0,0,686,353.7Zm0-28a12,12,0,1,1-12,12A12,12,0,0,1,686,325.7Z"
+                            />
+                            <rect
+                            id="Rectangle_32"
+                            data-name="Rectangle 32"
+                            width="3"
+                            height="9.999"
+                            transform="translate(681.002 332.696)"
+                            />
+                            <rect
+                            id="Rectangle_33"
+                            data-name="Rectangle 33"
+                            width="3"
+                            height="9.999"
+                            transform="translate(688.002 332.696)"
+                            />
+                        </g>
+                        </svg>):( <svg
+                        className='hover:cursor-pointer'
+                        onClick={togglePlayPause}
+                        fill="#DBD4D0"
+                        width="30px"
+                        height="30px"
+                        viewBox="0 0 512 512"
+                        id="_23_Play"
+                        data-name="23 Play"
+                        xmlns="http://www.w3.org/2000/svg"
+                        >
+                        <path
+                            id="Path_30"
+                            data-name="Path 30"
+                            d="M256,512C114.625,512,0,397.375,0,256,0,114.609,114.625,0,256,0S512,114.609,512,256C512,397.375,397.375,512,256,512Zm0-448C149.969,64,64,149.969,64,256s85.969,192,192,192,192-85.969,192-192S362.031,64,256,64Zm-64,96,160,96L192,352Z"
+                            fillRule="evenodd"
+                        />
+                        </svg>)}
+                    {/* next */}
                     <svg
-                    fill="#DBD4D0"
-                    width="30px"
-                    height="30px"
-                    viewBox="0 0 512 512"
-                    id="_23_Play"
-                    data-name="23 Play"
-                    xmlns="http://www.w3.org/2000/svg"
-                    >
-                    <path
-                        id="Path_30"
-                        data-name="Path 30"
-                        d="M256,512C114.625,512,0,397.375,0,256,0,114.609,114.625,0,256,0S512,114.609,512,256C512,397.375,397.375,512,256,512Zm0-448C149.969,64,64,149.969,64,256s85.969,192,192,192,192-85.969,192-192S362.031,64,256,64Zm-64,96,160,96L192,352Z"
-                        fillRule="evenodd"
-                    />
-                    </svg>
-                    <svg
+                    className='hover:cursor-pointer'
+                    onClick={nextSong}
                     width="30px"
                     height="30px"
                     viewBox="0 0 24 24"
@@ -167,10 +225,12 @@ export default function Player(){
                         fill="#DBD4D0"
                     />
                     </svg>
-                    <input type="range" min="1" max="100" className="w-24" value="40" />
+                    <input type="range" min="1" max="100" className="w-24 hover:cursor-pointer" value={volume} onChange={volumeUpDown}/>
                 </div>
                 {/* <!-- Like button --> */}
                 <svg
+                    className='hover:cursor-pointer'
+                    onClick={addLike}
                     width="30px"
                     height="30px"
                     viewBox="0 0 48 48"
@@ -184,8 +244,10 @@ export default function Player(){
                     />
                 </svg>
                 {/* <!-- Replay  --> */}
-                <div id="replay-duration" className="flex items-center space-x-2">
+                <div id="replay" className="flex items-center space-x-2">
                     <svg
+                    className='hover:cursor-pointer'
+                    onClick={replay}
                     fill="#DBD4D0"
                     width="30px"
                     height="30px"
@@ -199,7 +261,7 @@ export default function Player(){
                     </svg>
                 </div>
                 {/* <!-- Duration --> */}
-                <div><span className="text-xl font-lato text-white">3.45</span></div>
+                <div><span className="text-xl font-lato text-white">{audioRef.current.duration/60} min</span></div>
                 </div>
             </div>
             </div>
