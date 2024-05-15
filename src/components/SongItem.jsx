@@ -4,14 +4,19 @@ import { useParams } from 'react-router-dom';
 import storageService from '../appwrite/bucket';
 import { updateSong } from '../store/songSlice';
 import {emptyPrev, updateNext} from '../store/playerSlice'
+import { useEffect } from 'react';
 
-export default function SongItem({track}){
+export default function SongItem(trackId){
     const displayAddButton =useSelector((state)=> state.ui.displayAddButton);
     const dispatch=useDispatch();
     const currentSource=useSelector((state=>state.ui.currentSource));
     const id=useSelector((state=>state.ui.id));
     var tracks=[];
     var {playlistId}=useParams();
+    var track=null;
+    useEffect(()=>{
+        databaseService.getTrack(trackId).then((data)=>track=data);
+    })
 
     function addSong(track){
         databaseService.getPlaylistTracks(playlistId).then((data)=> tracks=data);

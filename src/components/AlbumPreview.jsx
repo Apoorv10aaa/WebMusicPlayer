@@ -1,19 +1,21 @@
-export default function AlbumPreview(album){
+import storageService from "../appwrite/bucket";
+
+export default function AlbumPreview({album}){
 
     return(
         <div className="p-2 relative bg-black bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-10">
             <div className="flex flex-col justify-between space-y-2">
                 <img
-                    src="./song2Img.jpg"
+                    src={storageService.getFile(album.cover)}
                     alt="Song Image"
                     className="h-28 w-32 rounded-lg"
                 />
                 <div id="songDetail">
                     <p className="text-sm text-white font-lato font-bold">
-                    Album1Name
+                    {album.albumName}
                     </p>
                     <p className="text-xs text-white font-lato text-wrap">
-                    Artists Name
+                    {album.release}
                     </p>
                 </div>
             </div>

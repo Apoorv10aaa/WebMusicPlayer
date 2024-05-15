@@ -16,14 +16,14 @@ export default function Profile(){
     const navigate=useNavigate();
 
     useEffect(()=>{
-      databaseService.getPlaylists(userData.$id).then((data)=>(setUserPlaylists(data.documents)))
+      databaseService.getPlaylists(userData.$id).then((data)=>(setUserPlaylists(data)))
       setLoading(false);
     },[userPlaylists]);
 
     function createPlaylist(){
         const playlistId=ID.unique();
         databaseService.addPlaylist(playlistId);
-        navigate(`/plalist/${playlistId}`)
+        navigate(`/plalists/${playlistId}`)
     }
     if(loading) return (<LoadingIndicator />)
     return (
@@ -40,14 +40,14 @@ export default function Profile(){
               />
               <div className="inline-block h-full flex-grow relative">
                 <h1 className="text-white text-3xl font-lato font-bold">
-                  Apoorv10aaa
+                  {userData.userName}
                 </h1>
                 <p className="text-white text-lg font-lato">
-                  apoorvsrivastava@gmail.com
+                  {userData.email}
                 </p>
                 <div className="absolute bottom-0 w-full">
                   <p className="text-white text-md font-lato inline-block">
-                    3 Playlists
+                    {userPlaylists.length} Playlists
                   </p>
                   <p
                     className="text-white text-md font-lato inline-block absolute right-8 font-bold "
@@ -55,6 +55,7 @@ export default function Profile(){
                     Create Playlist
                     <svg
                       className="inline-block mb-1 hover:cursor-pointer"
+                      onClick={createPlaylist}
                       fill="#F7941D"
                       height="20px"
                       width="20px"
@@ -86,7 +87,11 @@ export default function Profile(){
                   {/* <!-- Songs Div --> */}
                   <div id="songs" className="flex flex-wrap space-x-3">
                     {/* <!-- Song Items go here --> */}
-                    <SongPreview />
+                    {recents.map((trackId)=>{
+                      return(
+                        <SongPreview key={trackId} trackId={trackId} />
+                      )
+                    })}
                   </div>
                 </div>
                 {/* <!-- Liked --> */}
@@ -95,7 +100,11 @@ export default function Profile(){
                   {/* <!-- Songs Div --> */}
                   <div id="songs" className="flex flex-wrap space-x-3">
                     {/* <!-- Song Items go here --> */}
-                    <SongPreview />
+                    {liked.map((trackId)=>{
+                      return(
+                        <SongPreview key={trackId} trackId={trackId} />
+                      )
+                    })}
                   </div>
                 </div>
                 {/* <!-- Playlists --> */}
@@ -106,7 +115,15 @@ export default function Profile(){
                   {/* <!-- Playlists div --> */}
                   <div id="songs" className="flex flex-wrap space-x-3">
                     {/* <!-- Playlist go here --> */}
-                    <PlaylistPreview />
+                    { 
+                      userPlaylists.map((playlist)=>{
+                        return(
+                          <Link key={playlist.$id} to={`playlists/${playlist.$id}`}>
+                            <PlaylistPreview playlist={playlist}/>
+                          </Link>
+                        )
+                      })
+                    }
                   </div>
                 </div>
               </div>

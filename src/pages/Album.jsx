@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import {useParams} from 'react-router-dom';
 import databaseService from '../appwrite/database'
 import SongItem, { LoadingIndicator } from '../components/index';
-import { useDispatch } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import {setUI} from '../store/uiSlice'
+import {emptyPrev, updateNext} from '../store/playerSlice'
+import { updateSong } from '../store/songSlice';
 
 export default function Album(){
     const {albumId} =useParams();
@@ -13,7 +15,7 @@ export default function Album(){
     const dispatch=useDispatch();
 
     useEffect(()=>{
-      dispatch(setUI({currentSource:'playlist',id:albumId,displayAddButton:true}));
+      dispatch(setUI({currentSource:'album',id:albumId,displayAddButton:false}));
         databaseService.getAlbum(albumId).then((album)=>{
             setAlbum(album);
         });
@@ -22,6 +24,13 @@ export default function Album(){
         })
         setLoading(false);
     })
+
+    function playAlbum(){
+      dispatch(updateNext(tracks));
+      dispatch(emptyPrev());
+      dispatch(updateSong(databaseService.getTrack(tracks[0])));
+      document.getElementById("audio").play();
+    }
     if(loading) return(<LoadingIndicator />);
     return(
           <div id="albumPage" className="flex-grow px-4 flex flex-col gap-4">
@@ -38,21 +47,22 @@ export default function Album(){
                 <h1
                   className="text-2xl font-lato text-white font-bold bg-transparent"
                 >
-                  AlbumName
+                  {album.albumName}
                 </h1>
                 <p
                   className="text-md font-lato text-white bg-transparent text-wrap"
                 >
-                  Artists name
+                  {album.release}
                 </p>
                 <div
                   className="w-full absolute bottom-0 flex justify-between pr-4 items-center"
                 >
                   <p className="text-md font-lato text-white inline-block">
-                    17 Tracks
+                    {tracks.length} Tracks
                   </p>
                   <svg
-                    className="inline-block ml-2"
+                    className="inline-block ml-2 hover:cursor-pointer"
+                    onClick={playAlbum}
                     fill="#DBD4D0"
                     width="30px"
                     height="30px"
@@ -74,7 +84,9 @@ export default function Album(){
             {/* <!-- Songlist --> */}
             <div className="flex-grow flex flex-col gap-1">
               {/* <!-- SongItem --> */}
-              <SongItem />
+              {tracks.map((trackId)=>{
+                return (<div key={trackId}><SongItem trackId={trackId}/></div>)
+              })}
             </div>
           </div>
     )

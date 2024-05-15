@@ -1,14 +1,14 @@
 import {useSelector,useDispatch} from 'react-redux';
 import { useEffect, useState ,useRef} from 'react';
-import {Link} from 'react-router-dom';
 import databaseService from '../appwrite/database';
 import storageService from '../appwrite/bucket';
 import {playPause,updatePrev} from '../store/playerSlice';
-import { updateSong } from '../store/songSlice';
+import {updateUserData} from '../store/authSlice'
 
 export default function Player(){
     const audioRef=useRef(null);
     const dispatch=useDispatch();
+    const userData=useSelector((state)=>state.auth.userData);
     const songId=useSelector((state)=> state.song.songId);
     const isPlaying=useSelector((state)=>state.player.isPlaying);
     const songData=useSelector((state)=>state.song.songData);
@@ -64,12 +64,12 @@ export default function Player(){
             dispatch(updatePrev(prev));
         }
     }
-    var likedSongs=[];
+    var likedSongs=userData.liked;
     function addLike(){
-        databaseService.getUser().then((user)=>{
-           likedSongs=user.liked;
-           likedSongs.push(track);
-        })
+        likedSongs.push(track);
+        databaseService.updateUserProfile({liked:likedSongs});
+        //idhr krne h changes
+        dispatch(updateUserData())
     }
     function replay(){
         audioRef.current.play();

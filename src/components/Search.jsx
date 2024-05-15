@@ -1,23 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import elasticsearchService from "../elasticSearch/search";
 import SongItem from './SongItem';
-import LoadingIndicator from "./Loading";
 
-export default function Search({add,playlistId}){
+export default function Search(){
     const [query,setQuery]=useState('');
     const [result,setResult]=useState([]);
-    const [loading,setLoading]=useState(true);
     // always use result as result._source beacuse this object will have all data of song;
-    const handleSearch= useCallback(()=>{
-        elasticsearchService.searchTracks(query).then((data)=> setResult(data));
-    },[])
 
-    useEffect(()=>{
-        handleSearch();
-        setLoading(false);
-    },[query,handleSearch])
-    
-    if(loading) return(<LoadingIndicator />)
+    const handleSearch=()=>{
+        elasticsearchService.searchTracks(query).then((data)=> setResult(data));
+        setQuery("");
+    }
+
     return(
         <div id="search" className="flex-grow px-4">
           <div className="h-full w-full flex flex-col gap-5">
@@ -25,12 +19,14 @@ export default function Search({add,playlistId}){
             <div id="searchBar" className="flex justify-center gap-2">
               <input
                 type="text"
-                value=""
+                value={query}
+                onChange={(e)=> setQuery(e.target.value)}
                 placeholder="Search Your Song,Artist or Genre"
                 className="text-[#424242] text-sm w-80 font-lato bg-[#DBD4D0] rounded-2xl text-center "
               />
               <svg
                 className="hover:cursor-pointer"
+                onClick={handleSearch}
                 width="30px"
                 height="30px"
                 viewBox="0 0 16 16"
@@ -49,7 +45,11 @@ export default function Search({add,playlistId}){
             {/* <!-- SearchList --> */}
             <div id="searchList" className="flex flex-col gap-2">
               {/* <!-- SongSearchItem --> */}
-              <SongItem />
+              {result.map((song)=>{
+                return(
+                  <SongItem key={song._id} trackId={song._id} />
+                )
+              })}
             </div>
           </div>
         </div>

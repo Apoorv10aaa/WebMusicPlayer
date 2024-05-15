@@ -64,15 +64,15 @@ export  class DatabaseService{
 
     async addPlaylist({playlistId=ID.unique(),
         name="My Playlist",
-        description,
-        createdBy,tracks=[],isPublic}){
+        description="Your Description....",
+        createdBy,tracks=[],isPublic,cover}){
         try {
             const playlistData=this.database.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwritePlaylistsId,
                 playlistId,
                 {
-                    playlistId,name,description,createdBy,tracks,isPublic
+                    playlistId,name,description,createdBy,tracks,isPublic,cover
                 }
             );
             return playlistData;
@@ -217,14 +217,14 @@ export  class DatabaseService{
         }
     }
 
-    async updatePlaylist(playlistId,{name,description,tracks}){
+    async updatePlaylist(playlistId,{name,description,tracks,cover}){
         try {
             const playlistData=await this.database.updateDocument(
                 conf.appwriteDatabaseId,
                 conf.appwritePlaylistsId,
                 playlistId,
                 {
-                    name,description,tracks
+                    name,description,tracks,cover
                 }
             );
             return playlistData;
@@ -234,14 +234,14 @@ export  class DatabaseService{
         }
     }
 
-    async updateUserProfile(userId,{email,userName,profile,recents}){
+    async updateUserProfile(userId,{email,userName,profile,recents,liked}){
         try {
             const userData=await this.database.updateDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteUsersId,
                 userId,
                 {
-                    email,userName,profile,recents
+                    email,userName,profile,recents,liked
                 }
             );
             return userData;

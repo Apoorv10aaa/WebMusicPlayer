@@ -14,6 +14,13 @@ function App() {
   const dispatch = useDispatch();
   const navigate=useNavigate();
   
+  function onLogout(){
+    authService.logout().then(()=>{
+        dispatch(logout());
+        navigate("/");
+    });
+}
+  
   useEffect(()=>{
     authService.getCurrentuser().then((userData)=> {
       if(userData){

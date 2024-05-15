@@ -1,19 +1,12 @@
-import {useParams} from 'react-router-dom';
-import databaseService from '../appwrite/database'
-import { useEffect, useState } from 'react';
+import {useSelector} from 'react-redux';
+import storageService from '../appwrite/bucket'
 
 export default function SongData(){
-    const {songId}=useParams();
-    const [songData,setSongData]=useState();
-
-    useEffect(()=>{
-        databaseService.getTrack(songId).then((song)=>{
-            setSongData(song);
-        });
-    })
-
-    // function onPlay(){
-    // }
+    const songData=useSelector((state)=>state.song.songData);
+    
+    function addLike(){
+      // player wala add like krdena paste
+    }
     return(
         <div id="right-sidebar" className="w-1/5 p-2">
           <div
@@ -22,13 +15,15 @@ export default function SongData(){
             {/* <!-- songData --> */}
             <div id="songData" className="p-2">
               <img
-                src="./song4Img.png"
+                src={storageService.getFile(songData.$id)}
                 alt="SongImg"
                 className="h-40 w-full rounded-md"
               />
               <div className="mt-2 flex justify-between px-1">
-                <h1 className="text-xl font-lato text-white">SongName</h1>
+                <h1 className="text-xl font-lato text-white">{songData.songName}</h1>
                 <svg
+                  className='hover:cursor-pointer'
+                  onClick={addLike}
                   width="30px"
                   height="30px"
                   viewBox="0 0 48 48"
@@ -42,9 +37,9 @@ export default function SongData(){
                   />
                 </svg>
               </div>
-              <p className="text-sm font-lato text-white px-1">ArtistsName</p>
+              <p className="text-sm font-lato text-white px-1">{songData.artists[0]}</p>
               <p className="text-sm font-lato text-white px-1 mt-2">
-                Album - album_name
+                Album - {songData.albumId}
               </p>
             </div>
           </div>

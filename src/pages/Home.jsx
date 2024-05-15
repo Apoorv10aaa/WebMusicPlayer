@@ -4,11 +4,14 @@ import {Link} from 'react-router-dom';
 import PlaylistPreview, { LoadingIndicator } from '../components/index'
 import AlbumPreview from "../components/index";
 import SongPreview from "../components/index";
+import { useSelector } from "react-redux";
 
 function Home(){
     const [playlists,setPlaylists]=useState([]);
     const [albums,setAlbums]=useState([]);
     const [loading,setLoading] =useState(true);
+    const userData=useSelector((state)=>state.auth.userData);
+    var recents=userData.recents;
 
     useEffect(()=>{
         databaseService.getPlaylists().then(
@@ -25,6 +28,7 @@ function Home(){
                 }
             }
         );
+
         setLoading(false);
     },[]);
     
@@ -39,8 +43,11 @@ function Home(){
                 {/* <!-- Songs Div --> */}
                 <div id="songs" className="flex flex-wrap space-x-3">
                   {/* <!-- Song Items go here --> */}
-                  <SongPreview />
-                  <SongPreview />
+                  {recents.map((trackId)=>{
+                    <div key={trackId}>
+                      <SongPreview trackId={trackId}/>
+                    </div>
+                  })}
                 </div>
               </div>
               {/* <!-- Albums --> */}
@@ -49,8 +56,13 @@ function Home(){
                 {/* <!-- Albums div --> */}
                 <div id="songs" className="flex flex-wrap space-x-3">
                   {/* Albums go here */}
-                  <AlbumPreview />
-                  <AlbumPreview />
+                  {albums.map((album)=>{
+                    return(
+                      <Link key={album.$id} to={`/albums/${album.$id}`}>
+                        <AlbumPreview album={album}/>
+                      </Link>
+                    )
+                  })}
                 </div>
               </div>
               {/* <!-- Playlists --> */}
@@ -59,8 +71,13 @@ function Home(){
                 {/* <!-- Playlists div --> */}
                 <div id="songs" className="flex flex-wrap space-x-3">
                   {/* <!-- Playlist go here --> */}
-                  <PlaylistPreview />
-                  <PlaylistPreview />
+                  {playlists.map((playlist)=>{
+                    return(
+                      <Link key={playlist.$id} to={`/playlists/${playlist.$id}`}>
+                        <PlaylistPreview playlist={playlist}/>
+                      </Link>
+                    )
+                  })}
                 </div>
               </div>
             </div>

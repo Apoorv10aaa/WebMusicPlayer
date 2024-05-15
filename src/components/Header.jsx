@@ -1,22 +1,17 @@
-import { useState } from "react";
-import authService from "../appwrite/auth";
-import {useDispatch} from 'react-redux';
-import {logout} from '../store/authSlice';
-import {useNavigate} from 'react-router-dom';
-import LoadingIndicator from './index';
+import { useEffect, useState } from "react";
+import {useSelector} from 'react-redux';
+import {Link} from 'react-router-dom';
+import databaseService from "../appwrite/database";
+import storageService from "../appwrite/bucket";
 
 function Header(){
-    const dispatch=useDispatch();
-    const navigate=useNavigate();
-    const [loading,setLoading]=useState(false);
+    const userData=useSelector((state)=> state.auth.userData);
+    const [userPlaylists,setUserPlaylists] =useState([]);
 
-    function onLogout(){
-        authService.logout().then(()=>{
-            setLoading(true);
-            dispatch(logout());
-            navigate("/Landing");
-        });
-    }
+    useEffect(()=>{
+      databaseService.getPlaylists(userData.$id).then((data)=>(setUserPlaylists(data)))
+    },[userPlaylists]);
+
     return(
         <div
         id="header"
@@ -51,7 +46,7 @@ function Header(){
                 ></path>
                 <rect x="0" y="0" width="36" height="36" fillOpacity="0" />
               </svg>
-              <h1 className="text-xl pl-2 font-lato hover:underline">Home</h1>
+              <Link to={"/home"}><h1 className="text-xl pl-2 font-lato hover:underline">Home</h1></Link>
             </div>
             {/* <!-- Search --> */}
             <div id="search" className="flex items-center text-white space-x-4">
@@ -66,7 +61,7 @@ function Header(){
                   d="M21.71,20.29,18,16.61A9,9,0,1,0,16.61,18l3.68,3.68a1,1,0,0,0,1.42,0A1,1,0,0,0,21.71,20.29ZM11,18a7,7,0,1,1,7-7A7,7,0,0,1,11,18Z"
                 />
               </svg>
-              <h1 className="text-xl pl-2 font-lato hover:underline">Search</h1>
+              <Link to={"/search"}><h1 className="text-xl pl-2 font-lato hover:underline">Search</h1></Link>
             </div>
             {/* <!-- Profile --> */}
             <div id="profile" className="flex items-center text-white space-x-4">
@@ -81,7 +76,9 @@ function Header(){
                   d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
                 />
               </svg>
-              <h1 className="text-xl pl-2 font-lato hover:underline">Profile</h1>
+              <Link to={"/profile"}>
+                <h1 className="text-xl pl-2 font-lato hover:underline">Profile</h1>
+              </Link>
             </div>
           </div>
           {/* <!-- Second div --> */}
@@ -104,44 +101,29 @@ function Header(){
             </div>
             {/* <!-- Playlists --> */}
             <div id="playlists" className="h-full flex-grow flex flex-col gap-2">
-              <div
-                className="p-2 relative bg-gray-800 bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-20"
-              >
-                <div className="flex space-x-2">
-                  <img
-                    src="./song2Img.jpg"
-                    alt="Song Image"
-                    className="h-10 w-16 rounded-sm"
-                  />
-                  <div id="songDetail">
-                    <p className="text-sm text-white font-lato font-bold">
-                      Playlist1Name
-                    </p>
-                    <p className="text-xs text-white font-lato text-wrap">
-                      Description
-                    </p>
+              {userPlaylists.map((playlist)=>{
+                return(
+                  <div key={playlist.$id}
+                    className="p-2 relative bg-gray-800 bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-20"
+                  >
+                    <div className="flex space-x-2">
+                      <img
+                        src={storageService.getFile(playlist.cover)}
+                        alt="Song Image"
+                        className="h-10 w-16 rounded-sm"
+                      />
+                      <div id="songDetail">
+                        <p className="text-sm text-white font-lato font-bold">
+                          {playlist.name}
+                        </p>
+                        <p className="text-xs text-white font-lato text-wrap">
+                          {playlist.description}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div
-                className="p-2 relative bg-gray-800 bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-20"
-              >
-                <div className="flex space-x-2">
-                  <img
-                    src="./songImg.jpg"
-                    alt="Song Image"
-                    className="h-10 w-16 rounded-sm"
-                  />
-                  <div id="songDetail">
-                    <p className="text-sm text-white font-lato font-bold">
-                      Playlist2Name
-                    </p>
-                    <p className="text-xs text-white font-lato text-wrap">
-                      Description
-                    </p>
-                  </div>
-                </div>
-              </div>
+                )
+              })}
             </div>
           </div>
         </div>

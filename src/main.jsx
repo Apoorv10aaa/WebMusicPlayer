@@ -40,7 +40,7 @@ const router =createBrowserRouter([
         </AuthLayout>
       },
       {
-        path:'/playlist/:slug',
+        path:'/playlists/:slug',
         element:<AuthLayout>
           <Playlist />
         </AuthLayout>

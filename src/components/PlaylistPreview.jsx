@@ -1,4 +1,4 @@
-export default function PlaylistPreview(playlist){
+export default function PlaylistPreview({playlist}){
 
     return(
         <div className="p-2 relative bg-black bg-opacity-50 rounded-lg hover:bg-white hover:bg-opacity-10">
