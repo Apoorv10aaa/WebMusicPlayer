@@ -12,7 +12,7 @@ import Album from './pages/Album.jsx';
 import Error from './pages/Error.jsx';
 import Playlist from './pages/Playlist.jsx';
 import Profile from './pages/Profile.jsx';
-import Search from './pages/Search.jsx';
+import SearchPage from './pages/Search.jsx';
 
 const router =createBrowserRouter([
   {
@@ -54,7 +54,7 @@ const router =createBrowserRouter([
       {
         path:'/search',
         element:<AuthLayout>
-          <Search />
+          <SearchPage />
         </AuthLayout>
       }
     ]

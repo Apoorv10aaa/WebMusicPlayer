@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import {useParams} from 'react-router-dom';
 import databaseService from '../appwrite/database'
-import SongItem, { LoadingIndicator } from '../components/index';
+import  { SongItem,LoadingIndicator,Search } from '../components/index';
 import { useDispatch, useSelector } from 'react-redux';
 import {useForm} from 'react-hook-form'
-import Search from '../components/index';
 import {setUI} from '../store/uiSlice'
 import storageService from '../appwrite/bucket';
 import { updateSong } from '../store/songSlice';

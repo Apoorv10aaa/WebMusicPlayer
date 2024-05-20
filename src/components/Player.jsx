@@ -1,14 +1,14 @@
 import {useSelector,useDispatch} from 'react-redux';
 import { useEffect, useState ,useRef} from 'react';
-import databaseService from '../appwrite/database';
+// import databaseService from '../appwrite/database';
 import storageService from '../appwrite/bucket';
 import {playPause,updatePrev} from '../store/playerSlice';
-import {updateUserData} from '../store/authSlice'
+// import {updateUserData} from '../store/authSlice'
 
 export default function Player(){
     const audioRef=useRef(null);
     const dispatch=useDispatch();
-    const userData=useSelector((state)=>state.auth.userData);
+    // const userData=useSelector((state)=>state.auth.userData);
     const songId=useSelector((state)=> state.song.songId);
     const isPlaying=useSelector((state)=>state.player.isPlaying);
     const songData=useSelector((state)=>state.song.songData);
@@ -64,13 +64,14 @@ export default function Player(){
             dispatch(updatePrev(prev));
         }
     }
-    var likedSongs=userData.liked;
-    function addLike(){
-        likedSongs.push(track);
-        databaseService.updateUserProfile({liked:likedSongs});
-        //idhr krne h changes
-        dispatch(updateUserData())
-    }
+    // baad m krta hun
+    // var likedSongs=userData.liked;
+    // function addLike(){
+    //     likedSongs.push(track);
+    //     databaseService.updateUserProfile({liked:likedSongs});
+    //     //idhr krne h changes
+    //     dispatch(updateUserData())
+    // }
     function replay(){
         audioRef.current.play();
     }
@@ -230,7 +231,7 @@ export default function Player(){
                 {/* <!-- Like button --> */}
                 <svg
                     className='hover:cursor-pointer'
-                    onClick={addLike}
+                    // onClick={addLike}
                     width="30px"
                     height="30px"
                     viewBox="0 0 48 48"

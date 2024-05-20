@@ -26,6 +26,6 @@ const playerSlice=createSlice({
     }
 })
 
-export const {playPause,volumeCntrl,playNext,playPrev,emptyPrev} =playerSlice.actions;
+export const {playPause,volumeCntrl,updateNext,updatePrev,emptyPrev} =playerSlice.actions;
 
 export default playerSlice.reducer;

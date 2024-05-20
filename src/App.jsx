@@ -11,7 +11,7 @@ import Landing from './pages/Landing'
 function App() {
   const authStatus=useSelector((state)=>state.auth.status);
   const [loading,setLoading]=useState(true);
-  const dispatch = useDispatch();
+  const dispatch =useDispatch();
   const navigate=useNavigate();
   
   function onLogout(){
@@ -19,7 +19,7 @@ function App() {
         dispatch(logout());
         navigate("/");
     });
-}
+  }
   
   useEffect(()=>{
     authService.getCurrentuser().then((userData)=> {
@@ -31,7 +31,7 @@ function App() {
       }
   })
   .finally(setLoading(false))
-  },[])
+  },[dispatch,navigate])
 
   if(loading) return (<LoadingIndicator />)
   
@@ -48,7 +48,7 @@ function App() {
             >
               {/* <!-- Brand Div --> */}
               <div id="brand" className="flex items-center space-x-1">
-                <img src="logo.png" alt="Brand Logo" className="h-14 w-16" />
+                <img src="./public/logo.png" alt="Brand Logo" className="h-14 w-16" />
                 <h1 className="text-3xl font-lato text-white font-bold ">Amuse</h1>
               </div>
               {/* <!-- Buttons Div --> */}
@@ -59,6 +59,7 @@ function App() {
                   Premium
                 </button>
                 <svg
+                  onClick={onLogout}
                   className="inline-block"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="#DBD4D0"

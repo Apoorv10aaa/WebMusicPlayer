@@ -1,6 +1,6 @@
 import { useState } from "react";
 import elasticsearchService from "../elasticSearch/search";
-import SongItem from './SongItem';
+import {SongItem} from './index';
 
 export default function Search(){
     const [query,setQuery]=useState('');

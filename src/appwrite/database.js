@@ -38,7 +38,8 @@ export  class DatabaseService{
                 conf.appwriteUsersId,
                 userId
             );
-            return userData;
+            if(userData) return userData;
+            return null;
         } catch (error) {
             console.log("Error in Database => ",error);
             throw error;

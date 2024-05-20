@@ -1,6 +1,6 @@
-import Search from '../components/index'
+import {Search} from '../components/index'
 
-export default function ProfilePage(){
+export default function SearchPage(){
     return(
         <div>
             <Search />

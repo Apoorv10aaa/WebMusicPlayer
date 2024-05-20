@@ -4,9 +4,9 @@ import storageService from '../appwrite/bucket'
 export default function SongData(){
     const songData=useSelector((state)=>state.song.songData);
     
-    function addLike(){
-      // player wala add like krdena paste
-    }
+    // function addLike(){
+    //   // player wala add like krdena
+    // }
     return(
         <div id="right-sidebar" className="w-1/5 p-2">
           <div
@@ -23,7 +23,7 @@ export default function SongData(){
                 <h1 className="text-xl font-lato text-white">{songData.songName}</h1>
                 <svg
                   className='hover:cursor-pointer'
-                  onClick={addLike}
+                  // onClick={addLike}
                   width="30px"
                   height="30px"
                   viewBox="0 0 48 48"

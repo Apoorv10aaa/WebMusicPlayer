@@ -3,8 +3,7 @@ import databaseService from '../appwrite/database';
 import {useNavigate} from 'react-router-dom';
 import { ID } from 'appwrite';
 import { Link } from 'react-router-dom';
-import PlaylistPreview, { LoadingIndicator } from './index';
-import SongPreview from './index';
+import  { PlaylistPreview,LoadingIndicator,SongPreview} from './index';
 import { useEffect, useState } from 'react';
 
 export default function Profile(){

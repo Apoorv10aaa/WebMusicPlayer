@@ -17,10 +17,10 @@ export class AuthService{
     // here services functions
     async loginWithGoogle(){
         try {
-            window.location.href = await this.account.createOAuth2Session(
+            await this.account.createOAuth2Session(
                 'google',
                 'http://localhost:5173/home',
-                'http://localhost:5173/landing',
+                'http://localhost:5173',
                 ['profile','email','name']
             );
         } catch (error) {
@@ -32,6 +32,7 @@ export class AuthService{
     async getCurrentuser(){
         try {
             const session = await this.account.getSession('current');
+            console.log(session);
             if(session){
                 const userData= await this.account.get();
                 return userData;

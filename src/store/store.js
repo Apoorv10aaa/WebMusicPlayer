@@ -6,10 +6,10 @@ import uiReducer from './uiSlice'
 
 const store=configureStore({
     reducer:{
-        authReducer,
-        playerReducer,
-        songReducer,
-        uiReducer
+        auth:authReducer,
+        player:playerReducer,
+        song:songReducer,
+        ui:uiReducer
     }
 })
 

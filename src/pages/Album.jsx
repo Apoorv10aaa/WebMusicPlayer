@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {useParams} from 'react-router-dom';
 import databaseService from '../appwrite/database'
-import SongItem, { LoadingIndicator } from '../components/index';
+import  {SongItem,LoadingIndicator} from '../components/index';
 import { useDispatch} from 'react-redux';
 import {setUI} from '../store/uiSlice'
 import {emptyPrev, updateNext} from '../store/playerSlice'

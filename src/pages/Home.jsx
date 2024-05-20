@@ -1,36 +1,45 @@
 import { useEffect, useState} from "react";
 import databaseService from "../appwrite/database";
 import {Link} from 'react-router-dom';
-import PlaylistPreview, { LoadingIndicator } from '../components/index'
-import AlbumPreview from "../components/index";
-import SongPreview from "../components/index";
-import { useSelector } from "react-redux";
+import  { PlaylistPreview,LoadingIndicator,AlbumPreview,SongPreview } from '../components/index'
+import { useSelector ,useDispatch} from "react-redux";
+import authService from "../appwrite/auth";
+import {login} from '../store/authSlice'
 
 function Home(){
     const [playlists,setPlaylists]=useState([]);
     const [albums,setAlbums]=useState([]);
     const [loading,setLoading] =useState(true);
     const userData=useSelector((state)=>state.auth.userData);
+    const dispatch=useDispatch();
     var recents=userData.recents;
 
-    useEffect(()=>{
-        databaseService.getPlaylists().then(
-            (playlists)=>{
-                if(playlists){
-                    setPlaylists(playlists.documents);
-                }
-            }
-        );
-        databaseService.getAlbums().then(
-            (albums)=>{
-                if(albums){
-                    setAlbums(albums.documents);
-                }
-            }
-        );
+    databaseService.getPlaylists().then(
+      (playlists)=>{
+          if(playlists){
+              setPlaylists(playlists.documents);
+          }
+      }
+    );
+    databaseService.getAlbums().then(
+      (albums)=>{
+          if(albums){
+              setAlbums(albums.documents);
+          }
+      }
+    );
 
-        setLoading(false);
-    },[]);
+    useEffect(()=>{
+      authService.getCurrentuser().then((data)=>{
+        dispatch(login(data))
+        databaseService.getUser(data.$id).then((user)=>{
+          if(!user){
+            databaseService.addUser({data});
+          } 
+        })
+      })
+      setLoading(false);
+    },[dispatch]);
     
     if(loading) return(<LoadingIndicator />);
     return(

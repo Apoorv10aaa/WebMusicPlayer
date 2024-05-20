@@ -1,4 +1,4 @@
-import Error404 from '../components/index'
+import {Error404} from '../components/index'
 
 export default function Error(){
     return (
