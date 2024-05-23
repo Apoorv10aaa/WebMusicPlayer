@@ -35,15 +35,12 @@ const router =createBrowserRouter([
       },
       {
         path:'/albums/:slug',
-        element:<AuthLayout>
-          <Album />
-        </AuthLayout>
+        element:<Album />
+
       },
       {
         path:'/playlists/:slug',
-        element:<AuthLayout>
-          <Playlist />
-        </AuthLayout>
+        element: <Playlist />
       },
       {
         path:'/profile/:slug',
