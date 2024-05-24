@@ -3,13 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import storageService from "../appwrite/bucket";
 import { updateSong } from "../store/songSlice";
-import { emptyPrev, updateNext } from "../store/playerSlice";
+import { emptyPrev, playPause, updateNext } from "../store/playerSlice";
 import { useEffect, useState } from "react";
 
 export default function SongItem({ trackId }) {
   const displayAddButton = useSelector((state) => state.ui.displayAddButton);
-  const currentSource = useSelector((state) => state.ui.currentSource);
-  const id = useSelector((state) => state.ui.id);
   const dispatch = useDispatch();
   const [track, setTrack] = useState(null);
   var tracks = [];
@@ -29,20 +27,6 @@ export default function SongItem({ trackId }) {
 
   function playSong() {
     dispatch(updateSong(track));
-    if (currentSource == "playlist") {
-      databaseService
-        .getPlaylistTracks(id)
-        .then((data) => dispatch(updateNext({ next: data })));
-    } else if (currentSource == "album") {
-      databaseService
-        .getAlbumTracks(id)
-        .then((data) => dispatch(updateNext({ next: data })));
-    } else {
-      databaseService
-        .getAlbumTracks(track.albumId)
-        .then((data) => dispatch(updateNext({ next: data })));
-    }
-    dispatch(emptyPrev());
   }
   return track == null ? null : (
     <div className="w-full bg-black bg-opacity-50 rounded-md flex justify-between p-1 px-2 items-center hover:bg-white hover:bg-opacity-10">

@@ -9,7 +9,7 @@ export default function PlaylistPreview({ playlist }) {
           alt="Song Image"
           className="h-28 w-32 rounded-lg"
         />
-        <div id="songDetail">
+        <div id="songDetail" className="w-32">
           <p className="text-sm text-white font-lato font-bold">
             {playlist.name}
           </p>

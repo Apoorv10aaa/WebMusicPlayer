@@ -1,21 +1,46 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-// import databaseService from '../appwrite/database';
+import databaseService from "../appwrite/database";
 import storageService from "../appwrite/bucket";
-import { updatePrev } from "../store/playerSlice";
+import { updatePrev, updateNext, playPause } from "../store/playerSlice";
+import { updateSong } from "../store/songSlice";
 // import {updateUserData} from '../store/authSlice'
 
 export default function Player() {
   const audioRef = useRef(null);
   const dispatch = useDispatch();
   // const userData=useSelector((state)=>state.auth.userData);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const isPlaying = useSelector((state) => state.player.isPlaying);
   const songData = useSelector((state) => state.song.songData);
   const next = useSelector((state) => state.player.next);
   const prev = useSelector((state) => state.player.prev);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(100);
   const [progress, setProgress] = useState(0);
+  const currentSource = useSelector((state) => state.ui.currentSource);
+  const id = useSelector((state) => state.ui.id);
+
+  useEffect(() => {
+    audioRef.current.src = storageService.getSongForPlay(songData.fileId);
+    audioRef.current.play();
+    if (!isPlaying) dispatch(playPause());
+    const nextUpdate = async () => {
+      if (currentSource == "playlist") {
+        const tracks = await databaseService.getPlaylistTracks(id);
+        console.log("playlistTracks", tracks);
+      } else if (currentSource == "album") {
+        const tracks = await databaseService.getAlbumTracks(id);
+        console.log("albumTracks", tracks, "check", Array.isArray(tracks));
+        console.log("prev", typeof prev, "check", Array.isArray(prev));
+        dispatch(updateNext(tracks));
+      } else {
+        const tracks = await databaseService.getAlbumTracks(songData.albumId);
+        console.log("albumTracks", tracks);
+        dispatch(updateNext(tracks));
+      }
+    };
+    nextUpdate();
+  }, [songData]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -32,11 +57,6 @@ export default function Player() {
         audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       };
     }
-  }, [songData]);
-
-  useEffect(() => {
-    audioRef.current.src = storageService.getSongForPlay(songData.fileId);
-    togglePlayPause();
   }, [songData]);
 
   useEffect(() => {
@@ -59,10 +79,10 @@ export default function Player() {
   function togglePlayPause() {
     if (!isPlaying) {
       audioRef.current.play();
-      setIsPlaying(true);
+      dispatch(playPause());
     } else {
       audioRef.current.pause();
-      setIsPlaying(false);
+      dispatch(playPause());
     }
   }
   const formatTime = (time) => {
@@ -72,22 +92,16 @@ export default function Player() {
   };
   function nextSong() {
     // depends on where user is, wants to play next album song or next playlist song
-    prev.push(track);
-    dispatch(updatePrev(prev));
-    setTrack(() => {
-      var index = Math.floor(Math.random() * next.length) + 1;
-      return next[index];
-    });
-    togglePlayPause();
+    // dispatch(updatePrev((prevTracks) => prevTracks.push(songData)));
+    // dispatch(updateSong())
   }
   function prevSong() {
     if (prev.length > 0) {
-      setTrack(prev[prev.length - 1]);
+      dispatch(updateSong(prev[prev.length - 1]));
       prev.pop();
       dispatch(updatePrev(prev));
     }
   }
-  // baad m krta hun
   // var likedSongs=userData.liked;
   // function addLike(){
   //     likedSongs.push(track);
@@ -96,7 +110,10 @@ export default function Player() {
   //     dispatch(updateUserData())
   // }
   function replay() {
+    setProgress(0);
+    audioRef.current.currentTime = 0;
     audioRef.current.play();
+    if (!isPlaying) dispatch(playPause());
   }
   function volumeUpDown(e) {
     const newVolume = e.target.value;
@@ -238,6 +255,7 @@ export default function Player() {
             {/* <!-- Volume Control --> */}
             <div id="volume-control" className="flex items-center space-x-2">
               <svg
+                onClick={replay}
                 width="30px"
                 height="30px"
                 viewBox="0 0 16 16"

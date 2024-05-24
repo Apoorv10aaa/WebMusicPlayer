@@ -116,7 +116,7 @@ function Header() {
                       <img
                         src={storageService.getPreview(playlist.cover)}
                         alt="Song Image"
-                        className="h-10 w-16 rounded-sm"
+                        className="h-12 w-16 rounded-sm"
                       />
                       <div id="songDetail">
                         <p className="text-sm text-white font-lato font-bold">

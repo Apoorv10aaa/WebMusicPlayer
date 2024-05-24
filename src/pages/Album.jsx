@@ -4,16 +4,16 @@ import databaseService from "../appwrite/database";
 import { SongItem, LoadingIndicator } from "../components/index";
 import { useDispatch } from "react-redux";
 import { setUI } from "../store/uiSlice";
-import { emptyPrev, updateNext } from "../store/playerSlice";
+// import { emptyPrev, updateNext } from "../store/playerSlice";
 import { updateSong } from "../store/songSlice";
 import storageService from "../appwrite/bucket";
 
 export default function Album() {
   const { slug } = useParams();
   const [album, setAlbum] = useState();
-  const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+  console.log("current id is", slug);
 
   useEffect(() => {
     dispatch(
@@ -23,8 +23,6 @@ export default function Album() {
       try {
         const album = await databaseService.getAlbum(slug);
         setAlbum(album);
-        const tracks = await databaseService.getAlbumTracks(slug);
-        setTracks(tracks);
       } catch (error) {
         console.log("Error in Album fetch", error);
       } finally {
@@ -35,10 +33,9 @@ export default function Album() {
   }, [dispatch]);
 
   function playAlbum() {
-    dispatch(updateNext(tracks));
-    dispatch(emptyPrev());
-    dispatch(updateSong(databaseService.getTrack(tracks[0])));
-    document.getElementById("audio").play();
+    databaseService
+      .getTrack(album.tracks[0])
+      .then((data) => dispatch(updateSong(data)));
   }
   if (loading) return <LoadingIndicator />;
   return (
@@ -61,7 +58,7 @@ export default function Album() {
           </p>
           <div className="w-full absolute bottom-0 flex justify-between pr-4 items-center">
             <p className="text-md font-lato text-white inline-block">
-              {tracks.length} Tracks
+              {album.tracks.length} Tracks
             </p>
             <svg
               className="inline-block ml-2 hover:cursor-pointer"
@@ -87,7 +84,7 @@ export default function Album() {
       {/* <!-- Songlist --> */}
       <div className="flex-grow flex flex-col gap-1">
         {/* <!-- SongItem --> */}
-        {tracks.map((trackId) => {
+        {album.tracks.map((trackId) => {
           return (
             <div key={trackId}>
               <SongItem trackId={trackId} />

@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import databaseService from "../appwrite/database";
 import { SongItem, LoadingIndicator, Search } from "../components/index";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
 import { setUI } from "../store/uiSlice";
 import storageService from "../appwrite/bucket";
 import { updateSong } from "../store/songSlice";
-import { emptyPrev, updateNext } from "../store/playerSlice";
-import { login } from "../store/authSlice";
+// import { emptyPrev, updateNext } from "../store/playerSlice";
+// import { login } from "../store/authSlice";
 
 export default function Playlist() {
   const { slug } = useParams();
-  console.log("playlistId", slug);
   const [playlist, setPlaylist] = useState();
-  const [tracks, setTracks] = useState([]);
   const user = useSelector((state) => state.auth.userData);
-  const { register, handleSubmit } = useForm();
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const [editing, setEditing] = useState(false);
+  const [playlistName, setPlaylistName] = useState("");
+  const [playlistDescription, setPlaylistDescription] = useState("");
   var isAuthor = false;
 
   useEffect(() => {
@@ -34,10 +33,8 @@ export default function Playlist() {
       try {
         const playlist = await databaseService.getPlaylist(slug);
         setPlaylist(playlist);
-        console.log("playlistData", playlist);
-        const tracks = await databaseService.getPlaylistTracks(slug);
-        setTracks(tracks.documents);
-        console.log("tracks", tracks.documents);
+        setPlaylistName(playlist.name);
+        setPlaylistDescription(playlist.description);
       } catch (error) {
         console.log("Error in playlist fetch", error);
       } finally {
@@ -45,28 +42,29 @@ export default function Playlist() {
       }
     };
     fetch();
-  }, [dispatch]);
+  }, [dispatch, slug, playlist]);
 
-  function editPlaylist() {
-    setEditing(true);
-    document.querySelectorAll(".playlistInput").disabled =
-      !document.querySelector(".playlistInput").disabled;
-  }
-
-  function updatePlaylist(data) {
-    data.preventDefault();
-    databaseService.updatePlaylist(slug, {
-      name: data.name,
-      description: data.description,
-      cover: data.image,
-    });
-    setEditing(false);
+  async function updatePlaylist(e) {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const file = await storageService.addFile(e.target[0].files[0]);
+      const playlist = await databaseService.updatePlaylist(slug, {
+        name: e.target[1].value,
+        description: e.target[2].value,
+        cover: file.$id,
+      });
+      console.log("newPlaylistData", playlist);
+      setPlaylist(playlist);
+      setEditing(false);
+    } catch (error) {
+      console.log("Error in updating playlist", error);
+    }
   }
   function playPlaylist() {
-    dispatch(updateNext(tracks));
-    dispatch(emptyPrev());
-    dispatch(updateSong(databaseService.getTrack(tracks[0])));
-    document.getElementById("audio").play();
+    databaseService
+      .getTrack(playlist.tracks[0])
+      .then((data) => dispatch(updateSong(data)));
   }
   //try this if doesnt work then make a playlist slice then update state easily;
 
@@ -78,18 +76,14 @@ export default function Playlist() {
     <div id="playlistPage" className="flex-grow px-4 flex flex-col gap-4">
       {/* <!-- PlaylistsData --> */}
       <div className="h-44 bg-black bg-opacity-50 rounded-md p-2">
-        <form
-          onSubmit={handleSubmit(updatePlaylist)}
-          className="flex gap-4 h-full"
-        >
+        <form onSubmit={updatePlaylist} className="flex gap-4 h-full">
           <div id="imageInput" className="h-full relative">
             <input
               type="file"
               id="imageUpload"
               name="imageUpload"
               accept="image/*"
-              disabled
-              {...register("image")}
+              disabled={!editing}
               className="playlistInput absolute top-0 left-0 cursor-pointer opacity-0 h-full w-full"
             />
             <img
@@ -101,17 +95,20 @@ export default function Playlist() {
           <div className="flex-grow relative pb-2">
             <input
               type="text"
-              value={playlist.name}
-              disabled
-              {...register("name")}
-              className="playlistInput text-2xl font-lato text-white font-bold bg-transparent"
+              placeholder="Your playlistName"
+              autoFocus={!editing}
+              value={playlistName}
+              onChange={(e) => setPlaylistName(e.target.value)}
+              disabled={!editing}
+              className="playlistInput text-2xl font-lato text-white font-bold bg-transparent block"
             />
             <input
               type="text"
-              value={playlist.description}
-              disabled
-              {...register("description")}
-              className="playlistInput text-md font-lato text-white bg-transparent"
+              placeholder="Your Description"
+              value={playlistDescription}
+              onChange={(e) => setPlaylistDescription(e.target.value)}
+              disabled={!editing}
+              className="playlistInput text-md font-lato text-white bg-transparent text-wrap w-full"
             />
             <div className="w-full absolute bottom-0 flex justify-between pr-4 items-center">
               <p className="text-md font-lato text-white inline-block">
@@ -121,7 +118,7 @@ export default function Playlist() {
                 {!editing ? (
                   <svg
                     className="inline-block mr-2 hover:cursor-pointer"
-                    onClick={editPlaylist}
+                    onClick={() => setEditing(true)}
                     id="editButton"
                     width="30px"
                     height="30px"
@@ -186,14 +183,13 @@ export default function Playlist() {
       {/* <!-- Songlist --> */}
       <div className="flex-grow flex flex-col gap-1">
         {/* <!-- SongItem --> */}
-        {tracks &&
-          tracks.map((trackId) => {
-            return (
-              <div key={trackId}>
-                <SongItem trackId={trackId} />
-              </div>
-            );
-          })}
+        {playlist.tracks.map((trackId) => {
+          return (
+            <div key={trackId}>
+              <SongItem trackId={trackId} />
+            </div>
+          );
+        })}
       </div>
       {/* <!-- Add Songs (Search Component)--> */}
       {isAuthor && <Search />}

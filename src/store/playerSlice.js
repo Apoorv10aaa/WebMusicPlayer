@@ -4,10 +4,13 @@ const playerSlice = createSlice({
   name: "player",
   initialState: {
     isPlaying: false,
-    next: [],
-    prev: [],
+    next: null,
+    prev: {},
   },
   reducers: {
+    playPause: (state) => {
+      state.isPlaying = !state.isPlaying;
+    },
     volumeCntrl: (state, action) => {
       state.volume = action.payload;
     },
@@ -23,7 +26,7 @@ const playerSlice = createSlice({
   },
 });
 
-export const { volumeCntrl, updateNext, updatePrev, emptyPrev } =
+export const { playPause, volumeCntrl, updateNext, updatePrev, emptyPrev } =
   playerSlice.actions;
 
 export default playerSlice.reducer;

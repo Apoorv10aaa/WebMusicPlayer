@@ -89,7 +89,7 @@ export class DatabaseService {
     createdBy,
     tracks = [],
     isPublic,
-    cover,
+    cover = "defaultPlaylistCover",
   }) {
     try {
       const playlistData = await this.database.createDocument(
@@ -243,7 +243,7 @@ export class DatabaseService {
     }
   }
 
-  async updatePlaylist(playlistId, { name, description, tracks, cover }) {
+  async updatePlaylist(playlistId, { name, description, cover, tracks }) {
     try {
       const playlistData = await this.database.updateDocument(
         conf.appwriteDatabaseId,
@@ -252,8 +252,8 @@ export class DatabaseService {
         {
           name,
           description,
-          tracks,
           cover,
+          tracks,
         }
       );
       return playlistData;
