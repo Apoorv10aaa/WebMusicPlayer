@@ -10,7 +10,6 @@ function AuthLayout({ children }) {
 
   useEffect(() => {
     if (authStatus) {
-      console.log("authStatus", authStatus);
       setLoading(false);
     } else {
       navigate("/");

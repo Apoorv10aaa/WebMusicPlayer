@@ -14,7 +14,6 @@ export default function SongItem({ trackId }) {
   const [track, setTrack] = useState(null);
   var tracks = [];
   var { playlistId } = useParams();
-  console.log("track", track);
   useEffect(() => {
     databaseService.getTrack(trackId).then((data) => setTrack(data));
   }, [trackId]);

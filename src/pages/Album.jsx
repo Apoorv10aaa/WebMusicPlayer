@@ -14,7 +14,6 @@ export default function Album() {
   const [album, setAlbum] = useState();
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  console.log("current id is", slug);
   const userInfo = useSelector((state) => state.auth.userInfo);
 
   useEffect(() => {

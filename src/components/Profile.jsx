@@ -13,19 +13,15 @@ export default function Profile() {
   const [userPlaylists, setUserPlaylists] = useState([]);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const navigate = useNavigate();
-  console.log("userInfo", userInfo);
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        console.log("here user came");
         const playlists = await databaseService.getPlaylists(userData.$id);
         setUserPlaylists(playlists.documents);
-        console.log("here playlists came");
       } catch (error) {
         console.log("Error in Profile fetch", error);
       } finally {
-        console.log("ready to load");
         setLoading(false);
       }
     };
@@ -43,7 +39,6 @@ export default function Profile() {
   }
 
   if (loading) {
-    console.log("loading wait....");
     return <LoadingIndicator />;
   }
   return (

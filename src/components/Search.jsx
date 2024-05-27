@@ -9,7 +9,6 @@ export default function Search() {
 
   const handleSearch = () => {
     elasticsearchService.searchTracks(query).then((data) => {
-      console.log("searchResult", data);
       setResult(data);
     });
     setQuery("");

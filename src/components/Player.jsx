@@ -29,15 +29,11 @@ export default function Player() {
     const nextUpdate = async () => {
       if (currentSource == "playlist") {
         const tracks = await databaseService.getPlaylistTracks(id);
-        console.log("playlistTracks", tracks);
       } else if (currentSource == "album") {
         const tracks = await databaseService.getAlbumTracks(id);
-        console.log("albumTracks", tracks, "check", Array.isArray(tracks));
-        console.log("prev", typeof prev, "check", Array.isArray(prev));
         dispatch(updateNext(tracks));
       } else {
         const tracks = await databaseService.getAlbumTracks(songData.albumId);
-        console.log("albumTracks", tracks);
         dispatch(updateNext(tracks));
       }
     };
@@ -47,9 +43,7 @@ export default function Player() {
   useEffect(() => {
     const audio = audioRef.current;
     const handleLoadedMetadata = () => {
-      console.log("here setting duration");
       const durationInSeconds = audio.duration;
-      console.log("duration", durationInSeconds);
       setDuration(durationInSeconds);
     };
 

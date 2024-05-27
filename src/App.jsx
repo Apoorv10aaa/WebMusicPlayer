@@ -16,7 +16,6 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const songData = useSelector((state) => state.song.songData);
-  console.log("app render..");
 
   function onLogout() {
     authService.logout().then(() => {
@@ -29,13 +28,10 @@ function App() {
     const fetch = async () => {
       try {
         const userData = await authService.getCurrentuser();
-        console.log(userData);
         if (userData) {
           dispatch(login(userData));
           const userInfo = await databaseService.getUser(userData.$id);
-          console.log("userInfo", userInfo);
           if (userInfo == null) {
-            console.log("user not Exist in Db");
             const user = await databaseService.addUser({
               name: userData.name,
               email: userData.email,
@@ -67,10 +63,8 @@ function App() {
   }, [dispatch, navigate]);
 
   if (loading) {
-    console.log("loadding...");
     return <LoadingIndicator />;
   }
-  console.log("after loading ");
   if (!authStatus) return <Landing />;
 
   return (
