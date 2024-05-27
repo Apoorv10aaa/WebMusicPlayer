@@ -1,12 +1,22 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import storageService from "../appwrite/bucket";
+import { updateUserInfo } from "../store/authSlice";
+import databaseService from "../appwrite/database";
 
 export default function SongData() {
   const songData = useSelector((state) => state.song.songData);
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const dispatch = useDispatch();
 
-  // function addLike(){
-  //   // player wala add like krdena
-  // }
+  async function addLike() {
+    if (!userInfo.liked.includes(songData.$id)) {
+      const user = await databaseService.updateUserProfile(userInfo.$id, {
+        ...userInfo,
+        liked: [...userInfo.liked, songData.$id],
+      });
+      dispatch(updateUserInfo(user));
+    }
+  }
   return (
     <div id="right-sidebar" className="w-1/5 p-2">
       <div className="bg-[#202020] bg-opacity-50 rounded-md h-full w-full relative">
@@ -23,7 +33,7 @@ export default function SongData() {
             </h1>
             <svg
               className="hover:cursor-pointer"
-              // onClick={addLike}
+              onClick={addLike}
               width="25px"
               height="25px"
               viewBox="0 0 48 48"

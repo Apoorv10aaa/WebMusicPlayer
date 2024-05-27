@@ -8,42 +8,31 @@ import {
   SongPreview,
 } from "../components/index";
 import { useSelector, useDispatch } from "react-redux";
-import authService from "../appwrite/auth";
-import { login } from "../store/authSlice";
+// import authService from "../appwrite/auth";
+// import { login } from "../store/authSlice";
 
 function Home() {
   const [playlists, setPlaylists] = useState([]);
   const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  var recents = [];
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  console.log("userInfo", userInfo);
 
   useEffect(() => {
-    authService.getCurrentuser().then((data) => {
-      dispatch(login(data));
-      databaseService.getUser(data.$id).then((user) => {
-        if (user == null) {
-          databaseService.addUser({
-            name: data.name,
-            email: data.email,
-            userId: data.$id,
-          });
-        }
-      });
-    });
-    databaseService.getPlaylists().then((playlists) => {
-      if (playlists) {
+    const fetch = async () => {
+      try {
+        const playlists = await databaseService.getPlaylists();
         setPlaylists(playlists.documents);
-      }
-    });
-    databaseService.getAlbums().then((albums) => {
-      if (albums) {
+        const albums = await databaseService.getAlbums();
         setAlbums(albums.documents);
+      } catch (error) {
+        console.log("Error fetching in home", error);
+      } finally {
+        setLoading(false);
       }
-    });
-    console.log("playlists", playlists);
-    console.log("albums", albums);
-    setLoading(false);
+    };
+    fetch();
   }, [dispatch]);
 
   if (loading) return <LoadingIndicator />;
@@ -57,10 +46,12 @@ function Home() {
           {/* <!-- Songs Div --> */}
           <div id="songs" className="flex flex-wrap space-x-3">
             {/* <!-- Song Items go here --> */}
-            {recents.map((trackId) => {
-              <div key={trackId}>
-                <SongPreview trackId={trackId} />
-              </div>;
+            {userInfo.recents.map((trackId) => {
+              return (
+                <div key={trackId}>
+                  <SongPreview trackId={trackId} />
+                </div>
+              );
             })}
           </div>
         </div>

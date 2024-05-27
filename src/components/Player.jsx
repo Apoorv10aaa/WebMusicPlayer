@@ -4,6 +4,7 @@ import databaseService from "../appwrite/database";
 import storageService from "../appwrite/bucket";
 import { updatePrev, updateNext, playPause } from "../store/playerSlice";
 import { updateSong } from "../store/songSlice";
+import { updateUserInfo } from "../store/authSlice";
 // import {updateUserData} from '../store/authSlice'
 
 export default function Player() {
@@ -12,13 +13,14 @@ export default function Player() {
   // const userData=useSelector((state)=>state.auth.userData);
   const isPlaying = useSelector((state) => state.player.isPlaying);
   const songData = useSelector((state) => state.song.songData);
-  const next = useSelector((state) => state.player.next);
+  // const next = useSelector((state) => state.player.next);
   const prev = useSelector((state) => state.player.prev);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(100);
   const [progress, setProgress] = useState(0);
   const currentSource = useSelector((state) => state.ui.currentSource);
   const id = useSelector((state) => state.ui.id);
+  const userInfo = useSelector((state) => state.auth.userInfo);
 
   useEffect(() => {
     audioRef.current.src = storageService.getSongForPlay(songData.fileId);
@@ -103,12 +105,15 @@ export default function Player() {
     }
   }
   // var likedSongs=userData.liked;
-  // function addLike(){
-  //     likedSongs.push(track);
-  //     databaseService.updateUserProfile({liked:likedSongs});
-  //     //idhr krne h changes
-  //     dispatch(updateUserData())
-  // }
+  async function addLike() {
+    if (!userInfo.liked.includes(songData.$id)) {
+      const user = await databaseService.updateUserProfile(userInfo.$id, {
+        ...userInfo,
+        liked: [...userInfo.liked, songData.$id],
+      });
+      dispatch(updateUserInfo(user));
+    }
+  }
   function replay() {
     setProgress(0);
     audioRef.current.currentTime = 0;
@@ -255,7 +260,6 @@ export default function Player() {
             {/* <!-- Volume Control --> */}
             <div id="volume-control" className="flex items-center space-x-2">
               <svg
-                onClick={replay}
                 width="30px"
                 height="30px"
                 viewBox="0 0 16 16"
@@ -284,7 +288,7 @@ export default function Player() {
             {/* <!-- Like button --> */}
             <svg
               className="hover:cursor-pointer"
-              // onClick={addLike}
+              onClick={addLike}
               width="30px"
               height="30px"
               viewBox="0 0 48 48"

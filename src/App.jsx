@@ -3,9 +3,12 @@ import { Header, LoadingIndicator, Player, SongData } from "./components/index";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import authService from "./appwrite/auth";
-import { login, logout } from "./store/authSlice";
+import { login, logout, updateUserInfo } from "./store/authSlice";
 import { useNavigate } from "react-router-dom";
 import Landing from "./pages/Landing";
+import databaseService from "./appwrite/database";
+import { updateSong } from "./store/songSlice";
+import { playPause } from "./store/playerSlice";
 
 function App() {
   const authStatus = useSelector((state) => state.auth.status);
@@ -29,9 +32,30 @@ function App() {
         console.log(userData);
         if (userData) {
           dispatch(login(userData));
+          const userInfo = await databaseService.getUser(userData.$id);
+          console.log("userInfo", userInfo);
+          if (userInfo == null) {
+            console.log("user not Exist in Db");
+            const user = await databaseService.addUser({
+              name: userData.name,
+              email: userData.email,
+              userId: userData.$id,
+            });
+            dispatch(updateUserInfo(user));
+          } else {
+            dispatch(updateUserInfo(userInfo));
+            // for already present player;
+            // if (userInfo.recents != []) {
+            //   const songData = await databaseService.getTrack(
+            //     userInfo.recents[userInfo.recents.length - 1]
+            //   );
+            //   dispatch(updateSong(songData));
+            // }
+          }
           navigate("/home");
         } else {
           dispatch(logout());
+          navigate("/login");
         }
       } catch (error) {
         console.log("Error in App", error);
@@ -74,7 +98,7 @@ function App() {
                 <div className="inline-block">
                   <svg
                     onClick={onLogout}
-                    className="inline-block"
+                    className="inline-block hover:cursor-pointer"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="#DBD4D0"
                     width="35px"

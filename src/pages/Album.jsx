@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import databaseService from "../appwrite/database";
 import { SongItem, LoadingIndicator } from "../components/index";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUI } from "../store/uiSlice";
 // import { emptyPrev, updateNext } from "../store/playerSlice";
 import { updateSong } from "../store/songSlice";
 import storageService from "../appwrite/bucket";
+import { updateUserInfo } from "../store/authSlice";
 
 export default function Album() {
   const { slug } = useParams();
@@ -14,6 +15,7 @@ export default function Album() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   console.log("current id is", slug);
+  const userInfo = useSelector((state) => state.auth.userInfo);
 
   useEffect(() => {
     dispatch(
@@ -30,12 +32,18 @@ export default function Album() {
       }
     };
     fetch();
-  }, [dispatch]);
+  }, [dispatch, slug]);
 
-  function playAlbum() {
-    databaseService
-      .getTrack(album.tracks[0])
-      .then((data) => dispatch(updateSong(data)));
+  async function playAlbum() {
+    const song = await databaseService.getTrack(album.tracks[0]);
+    dispatch(updateSong(song));
+    if (!userInfo.recents.includes(song.$id)) {
+      const user = databaseService.updateUserProfile(userInfo.$id, {
+        ...userInfo,
+        recents: [...userInfo.recents, song.$id],
+      });
+      dispatch(updateUserInfo(user));
+    }
   }
   if (loading) return <LoadingIndicator />;
   return (

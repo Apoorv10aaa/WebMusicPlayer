@@ -14,7 +14,7 @@ export class DatabaseService {
 
   // database services
 
-  async addUser({ name, email, userId, profile }) {
+  async addUser({ name, email, userId, profile = "defaultProfileCover" }) {
     try {
       // remember you will use session token of google auth for fetching profile(.fetch)
       const userData = await this.database.createDocument(
@@ -25,7 +25,7 @@ export class DatabaseService {
           userName: name,
           email,
           userId,
-          profile: profile,
+          profile,
         }
       );
       return userData;

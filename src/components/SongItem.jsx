@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import storageService from "../appwrite/bucket";
 import { updateSong } from "../store/songSlice";
-import { emptyPrev, playPause, updateNext } from "../store/playerSlice";
+// import { emptyPrev, playPause, updateNext } from "../store/playerSlice";
 import { useEffect, useState } from "react";
+import { updateUserInfo } from "../store/authSlice";
 
 export default function SongItem({ trackId }) {
   const displayAddButton = useSelector((state) => state.ui.displayAddButton);
+  const userInfo = useSelector((state) => state.auth.userInfo);
   const dispatch = useDispatch();
   const [track, setTrack] = useState(null);
   var tracks = [];
@@ -15,7 +17,7 @@ export default function SongItem({ trackId }) {
   console.log("track", track);
   useEffect(() => {
     databaseService.getTrack(trackId).then((data) => setTrack(data));
-  }, []);
+  }, [trackId]);
 
   function addSong(track) {
     databaseService
@@ -25,8 +27,15 @@ export default function SongItem({ trackId }) {
     databaseService.updatePlaylist(playlistId, tracks);
   }
 
-  function playSong() {
+  async function playSong() {
     dispatch(updateSong(track));
+    if (!userInfo.recents.includes(trackId)) {
+      const user = await databaseService.updateUserProfile(userInfo.$id, {
+        ...userInfo,
+        recents: [...userInfo.recents, trackId],
+      });
+      dispatch(updateUserInfo(user));
+    }
   }
   return track == null ? null : (
     <div className="w-full bg-black bg-opacity-50 rounded-md flex justify-between p-1 px-2 items-center hover:bg-white hover:bg-opacity-10">

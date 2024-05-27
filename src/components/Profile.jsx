@@ -11,28 +11,26 @@ export default function Profile() {
   const userData = useSelector((state) => state.auth.userData);
   const [loading, setLoading] = useState(true);
   const [userPlaylists, setUserPlaylists] = useState([]);
-  const [userInfo, setUserInfo] = useState(null);
+  const userInfo = useSelector((state) => state.auth.userInfo);
   const navigate = useNavigate();
   console.log("userInfo", userInfo);
 
-  const fetch = async () => {
-    try {
-      const user = await databaseService.getUser(userData.$id);
-      setUserInfo(user);
-      console.log("here user came");
-      const playlists = await databaseService.getPlaylists(userData.$id);
-      setUserPlaylists(playlists.documents);
-      console.log("here playlists came");
-    } catch (error) {
-      console.log("Error in Profile fetch", error);
-    } finally {
-      console.log("ready to load");
-      setLoading(false);
-    }
-  };
   useEffect(() => {
+    const fetch = async () => {
+      try {
+        console.log("here user came");
+        const playlists = await databaseService.getPlaylists(userData.$id);
+        setUserPlaylists(playlists.documents);
+        console.log("here playlists came");
+      } catch (error) {
+        console.log("Error in Profile fetch", error);
+      } finally {
+        console.log("ready to load");
+        setLoading(false);
+      }
+    };
     fetch();
-  }, []);
+  }, [userData]);
 
   function createPlaylist() {
     const playlistId = ID.unique();
