@@ -8,7 +8,7 @@ import Landing from "./pages/Landing.jsx";
 import AuthLayout from "./components/AuthLayout.jsx";
 import Home from "./pages/Home.jsx";
 import Album from "./pages/Album.jsx";
-import Error from "./pages/Error.jsx";
+import ErrorPage from "./pages/ErrorPage.jsx";
 import Playlist from "./pages/Playlist.jsx";
 import Profile from "./pages/Profile.jsx";
 import SearchPage from "./pages/Search.jsx";
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/error",
-        element: <Error />,
+        element: <ErrorPage />,
       },
       {
         path: "/albums/:slug",
