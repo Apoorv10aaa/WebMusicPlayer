@@ -19,7 +19,7 @@ export class AuthService {
     try {
       await this.account.createOAuth2Session(
         "google",
-        "https://cloud.appwrite.io/",
+        "http://localhost:5173/",
         "https://cloud.appwrite.io/failure",
         ["profile", "email"]
       );
