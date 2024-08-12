@@ -27,12 +27,12 @@
 </ul>
 
 <h2>Screenshots</h2>
-    ![Screenshot 2024-08-12 144318](https://github.com/user-attachments/assets/d94629ea-8c7d-4d0e-8e31-08258fd1ea3c)
-    ![Screenshot 2024-08-12 144357](https://github.com/user-attachments/assets/96ee68c9-90a0-497b-abec-a002a934d92d)
-    ![Screenshot 2024-08-12 144418](https://github.com/user-attachments/assets/306e3173-5e83-4082-8b8e-cffe82e9d7fa)
-    ![Screenshot 2024-08-12 144445](https://github.com/user-attachments/assets/aa8f8875-b0e1-4515-9776-df6559578ce9)
-    ![Screenshot 2024-08-12 144639](https://github.com/user-attachments/assets/c198482e-a29d-4fc7-8fd4-01a1db83ff84)
-    ![Screenshot 2024-08-12 144907](https://github.com/user-attachments/assets/0803b553-12e1-4dc4-8262-addcd46ac6a8)
+    ![Screenshot 2024-08-12 144318](https://github.com/user-attachments/assets/d94629ea-8c7d-4d0e-8e31-08258fd1ea3c)<br>
+    ![Screenshot 2024-08-12 144357](https://github.com/user-attachments/assets/96ee68c9-90a0-497b-abec-a002a934d92d)<br>
+    ![Screenshot 2024-08-12 144418](https://github.com/user-attachments/assets/306e3173-5e83-4082-8b8e-cffe82e9d7fa)<br>
+    ![Screenshot 2024-08-12 144445](https://github.com/user-attachments/assets/aa8f8875-b0e1-4515-9776-df6559578ce9)<br>
+    ![Screenshot 2024-08-12 144639](https://github.com/user-attachments/assets/c198482e-a29d-4fc7-8fd4-01a1db83ff84)<br>
+    ![Screenshot 2024-08-12 144907](https://github.com/user-attachments/assets/0803b553-12e1-4dc4-8262-addcd46ac6a8)<br>
 
 <h2>Demo Video</h2>
 https://www.loom.com/share/30bf5f4c0e5c4ef99621da8bafd22952?sid=1429808b-1235-4d76-8420-7cb987c18e2d
