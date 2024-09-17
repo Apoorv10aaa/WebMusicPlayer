@@ -44,6 +44,13 @@ export default function Search() {
             <circle cx="7.5" cy="7.5" r="4.75" />
           </svg>
         </div>
+        {/* messge about not working of search */}
+        <p className="text-center text-white font-lato">
+          <u>
+            Search Functionality may not work due to ElasticSearch limited time
+            free services.
+          </u>
+        </p>
         {/* <!-- SearchList --> */}
         <div id="searchList" className="flex flex-col gap-2">
           {/* <!-- SongSearchItem --> */}

@@ -19,8 +19,8 @@ export class AuthService {
     try {
       await this.account.createOAuth2Session(
         "google",
-        "https://appwrite.amuse-music-player.netlify.app/",
-        "https://cloud.appwrite.io/failure",
+        "https://amuse-music-player.netlify.app",
+        "https://localhost",
         ["profile", "email"]
       );
     } catch (error) {
