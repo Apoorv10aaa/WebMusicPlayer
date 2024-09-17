@@ -19,7 +19,7 @@ export class AuthService {
     try {
       await this.account.createOAuth2Session(
         "google",
-        "https://amuse-music-player.netlify.app",
+        "https://amuse-music-player.netlify.app/home",
         "https://localhost",
         ["profile", "email"]
       );
