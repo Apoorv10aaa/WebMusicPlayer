@@ -64,7 +64,7 @@ function App() {
 
   useEffect(() => {
     const fetch = async () => {
-      const userInfo = await databaseService.getUser(conf.appwriteMyUserId);
+      const userInfo = await databaseService.getUser("664c7867939170e0666a");
       dispatch(updateUserInfo(userInfo));
       setLoading(false);
     };
