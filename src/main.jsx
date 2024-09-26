@@ -5,7 +5,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import store from "./store/store.js";
 import { Provider } from "react-redux";
 import Landing from "./pages/Landing.jsx";
-import AuthLayout from "./components/AuthLayout.jsx";
+// import AuthLayout from "./components/AuthLayout.jsx";
 import Home from "./pages/Home.jsx";
 import Album from "./pages/Album.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
@@ -24,11 +24,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/home",
-        element: (
-          <AuthLayout>
-            <Home />
-          </AuthLayout>
-        ),
+        element: <Home />,
       },
       {
         path: "/error",
@@ -44,19 +40,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile/:slug",
-        element: (
-          <AuthLayout>
-            <Profile />
-          </AuthLayout>
-        ),
+        element: <Profile />,
       },
       {
         path: "/search",
-        element: (
-          <AuthLayout>
-            <SearchPage />
-          </AuthLayout>
-        ),
+        element: <SearchPage />,
       },
     ],
   },

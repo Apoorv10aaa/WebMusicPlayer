@@ -9,7 +9,7 @@ import Landing from "./pages/Landing";
 import databaseService from "./appwrite/database";
 import { updateSong } from "./store/songSlice";
 import { playPause } from "./store/playerSlice";
-
+import conf from "./conf/conf";
 function App() {
   const authStatus = useSelector((state) => state.auth.status);
   const [loading, setLoading] = useState(true);
@@ -24,42 +24,58 @@ function App() {
     });
   }
 
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     try {
+  //       const userData = await authService.getCurrentuser();
+  //       if (userData) {
+  //         dispatch(login(userData));
+  //         const userInfo = await databaseService.getUser(userData.$id);
+  //         if (userInfo == null) {
+  //           const user = await databaseService.addUser({
+  //             name: userData.name,
+  //             email: userData.email,
+  //             userId: userData.$id,
+  //           });
+  //           dispatch(updateUserInfo(user));
+  //         } else {
+  //           dispatch(updateUserInfo(userInfo));
+  //           // for already present player;
+  //           // if (userInfo.recents != []) {
+  //           //   const songData = await databaseService.getTrack(
+  //           //     userInfo.recents[userInfo.recents.length - 1]
+  //           //   );
+  //           //   dispatch(updateSong(songData));
+  //           // }
+  //         }
+  //         navigate("/home");
+  //       } else {
+  //         dispatch(logout());
+  //         navigate("/login");
+  //       }
+  //     } catch (error) {
+  //       console.log("Error in App", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetch();
+  // }, [dispatch, navigate]);
+
   useEffect(() => {
     const fetch = async () => {
-      try {
-        const userData = await authService.getCurrentuser();
-        if (userData) {
-          dispatch(login(userData));
-          const userInfo = await databaseService.getUser(userData.$id);
-          if (userInfo == null) {
-            const user = await databaseService.addUser({
-              name: userData.name,
-              email: userData.email,
-              userId: userData.$id,
-            });
-            dispatch(updateUserInfo(user));
-          } else {
-            dispatch(updateUserInfo(userInfo));
-            // for already present player;
-            // if (userInfo.recents != []) {
-            //   const songData = await databaseService.getTrack(
-            //     userInfo.recents[userInfo.recents.length - 1]
-            //   );
-            //   dispatch(updateSong(songData));
-            // }
-          }
-          navigate("/home");
-        } else {
-          dispatch(logout());
-          navigate("/login");
-        }
-      } catch (error) {
-        console.log("Error in App", error);
-      } finally {
-        setLoading(false);
-      }
+      const userInfo = await databaseService.getUser(conf.appwriteMyUserId);
+      dispatch(updateUserInfo(userInfo));
+      setLoading(false);
     };
+    const userData = {
+      name: "Apoorv Srivastava",
+      $id: "664c7867939170e0666a",
+      email: "apoorvsrivastava2121@gmail.com",
+    };
+    dispatch(login(userData));
     fetch();
+    navigate("/home");
   }, [dispatch, navigate]);
 
   if (loading) {
