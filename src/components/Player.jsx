@@ -2,9 +2,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import databaseService from "../appwrite/database";
 import storageService from "../appwrite/bucket";
-import { updatePrev, updateNext, playPause } from "../store/playerSlice";
+import {
+  updatePrev,
+  updateNext,
+  playPause,
+  loadSong,
+} from "../store/playerSlice";
 import { updateSong } from "../store/songSlice";
 import { updateUserInfo } from "../store/authSlice";
+// import LoadingIndicator from "./Loading";
+import SongLoadingIndicator from "./SongLoadingIndicator";
 // import {updateUserData} from '../store/authSlice'
 
 export default function Player() {
@@ -21,6 +28,7 @@ export default function Player() {
   const currentSource = useSelector((state) => state.ui.currentSource);
   const id = useSelector((state) => state.ui.id);
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const songLoading = useSelector((state) => state.player.songLoading);
 
   useEffect(() => {
     audioRef.current.src = storageService.getSongForPlay(songData.fileId);
@@ -37,6 +45,7 @@ export default function Player() {
         dispatch(updateNext(tracks));
       }
     };
+    console.log(songLoading);
     nextUpdate();
   }, [songData]);
 
@@ -45,6 +54,7 @@ export default function Player() {
     const handleLoadedMetadata = () => {
       const durationInSeconds = audio.duration;
       setDuration(durationInSeconds);
+      dispatch(loadSong());
     };
 
     if (audio) {
@@ -175,7 +185,9 @@ export default function Player() {
                 />
               </svg>
               {/* play */}
-              {isPlaying ? (
+              {songLoading ? (
+                <SongLoadingIndicator />
+              ) : isPlaying ? (
                 <svg
                   fill="#DBD4D0"
                   onClick={togglePlayPause}

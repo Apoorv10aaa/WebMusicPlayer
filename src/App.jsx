@@ -16,6 +16,7 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const songData = useSelector((state) => state.song.songData);
+  const songLoading = useSelector((state) => state.player.songLoading);
 
   function onLogout() {
     authService.logout().then(() => {
@@ -73,6 +74,7 @@ function App() {
       $id: "664c7867939170e0666a",
       email: "apoorvsrivastava2121@gmail.com",
     };
+    console.log("songLoading", songLoading);
     dispatch(login(userData));
     fetch();
     navigate("/home");

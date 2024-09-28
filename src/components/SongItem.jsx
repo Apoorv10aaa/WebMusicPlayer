@@ -6,6 +6,7 @@ import { updateSong } from "../store/songSlice";
 // import { emptyPrev, playPause, updateNext } from "../store/playerSlice";
 import { useEffect, useState } from "react";
 import { updateUserInfo } from "../store/authSlice";
+import { loadSong } from "../store/playerSlice";
 
 export default function SongItem({ trackId }) {
   const displayAddButton = useSelector((state) => state.ui.displayAddButton);
@@ -14,6 +15,7 @@ export default function SongItem({ trackId }) {
   const [track, setTrack] = useState(null);
   var tracks = [];
   var { playlistId } = useParams();
+  const songLoading = useSelector((state) => state.player.songLoading);
   useEffect(() => {
     databaseService.getTrack(trackId).then((data) => setTrack(data));
   }, [trackId]);
@@ -28,6 +30,8 @@ export default function SongItem({ trackId }) {
 
   async function playSong() {
     dispatch(updateSong(track));
+    console.log(songLoading);
+    dispatch(loadSong());
     if (!userInfo.recents.includes(trackId)) {
       const user = await databaseService.updateUserProfile(userInfo.$id, {
         ...userInfo,
