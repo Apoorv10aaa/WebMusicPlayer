@@ -2,6 +2,7 @@
 
 <p><strong>Project Name:</strong> Amuse!</p>
 <p><strong>Date:</strong> February 2024</p>
+<p><strong>Live:</strong> https://amuse-music-player.netlify.app </p>
 
 <h2>Description</h2>
 <p>Amuse is a fully-functional, user-friendly, and secure web-based music player application. It allows users to browse, play, and manage their music collections, create playlists, shuffle songs, and enjoy seamless streaming. The application is built using modern web technologies to provide a high-performance and responsive user experience.</p>
